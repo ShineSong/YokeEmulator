@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using vJoyInterfaceWrap;
-namespace AcceleratorMeterServer
+namespace YokeEmulatorServer
 {
     class Program
     {
@@ -25,7 +25,7 @@ namespace AcceleratorMeterServer
         static byte[] ctlBuffer = new byte[CtlMsgSize];
         const int CtlPort = 23334;
         const int CtlMsgSize = 11;
-
+        static bool isPovCon = false;
         static void Main(string[] args)
         {
             joystick = new vJoy();
@@ -77,6 +77,8 @@ namespace AcceleratorMeterServer
             Console.WriteLine("Numner of buttons\t\t{0}\n", nButtons);
             Console.WriteLine("Numner of Continuous POVs\t{0}\n", ContPovNumber);
             Console.WriteLine("Numner of Descrete POVs\t\t{0}\n", DiscPovNumber);
+            if (ContPovNumber > DiscPovNumber)
+                isPovCon = true;
             Console.WriteLine("Axis X\t\t{0}\n", AxisX ? "Yes" : "No");
             Console.WriteLine("Axis Y\t\t{0}\n", AxisX ? "Yes" : "No");
             Console.WriteLine("Axis Z\t\t{0}\n", AxisX ? "Yes" : "No");
@@ -250,7 +252,18 @@ namespace AcceleratorMeterServer
                 case (byte)'p':
                     double pov = BitConverter.ToDouble(ctlBuffer, 2);
                     if(pov>0)
-                        joystick.SetContPov((int)pov*100, id, 1);
+                        if (isPovCon)
+                            joystick.SetContPov((int)pov*100, id, 1);
+                        else
+                        {
+                            int ori = 0;
+                            if (pov > 315) ori = 0;
+                            else if (pov > 225) ori = 3;
+                            else if (pov > 135) ori = 2;
+                            else if (pov > 45) ori = 1;
+                            else ori = 0;
+                            joystick.SetDiscPov(ori, id, 1);
+                        }
                     else
                         joystick.SetContPov(-1, id, 1);
                     break;

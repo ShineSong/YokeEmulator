@@ -42,7 +42,10 @@ namespace YokeEmulator
 
         bool povTouched = false;
         Ellipse povPoint = null;
-        const int povPointSize= 20;
+        const int povPointSize = 20;
+
+        int pressedBtn = -1;
+        byte[] isToggle=null;
         public MainPage()
         {
             this.InitializeComponent();
@@ -56,14 +59,16 @@ namespace YokeEmulator
 
             povPoint = new Ellipse();
             var margin = povPoint.Margin;
-            margin.Left = povCtl.Width / 2- povPointSize/2;
-            margin.Top = povCtl.Height / 2- povPointSize/2;
+            margin.Left = povCtl.Width / 2 - povPointSize / 2;
+            margin.Top = povCtl.Height / 2 - povPointSize / 2;
             povPoint.Margin = margin;
             povPoint.Width = povPointSize;
             povPoint.Height = povPointSize;
             povPoint.Fill = new SolidColorBrush(Colors.Red);
             povPoint.Stroke = new SolidColorBrush(Colors.Yellow);
             povCtl.Children.Add(povPoint);
+
+
         }
 
         /// <summary>
@@ -80,6 +85,65 @@ namespace YokeEmulator
             // Windows.Phone.UI.Input.HardwareButtons.BackPressed 事件。
             // 如果使用由某些模板提供的 NavigationHelper，
             // 则系统会为您处理该事件。
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            int btnCount;
+            if (localSettings.Values.ContainsKey("BTNCOUNT"))
+            {
+                try
+                {
+                    btnCount = int.Parse(localSettings.Values["BTNCOUNT"].ToString());
+                    isToggle = new byte[btnCount];
+                    buttonsGridView.Items.Clear();
+                    for (int i = 0; i < btnCount; ++i)
+                    {
+
+                        string key1 = "BTNLABEL" + i;
+                        string key2 = "BTNTOGGLE" + i;
+                        if ((bool)localSettings.Values[key2])
+                            isToggle[i] = 0;
+                        else
+                            isToggle[i] = 2;
+                        GridViewItem _item = new GridViewItem();
+                        _item.Margin = new Thickness(2);
+                        _item.Background = new SolidColorBrush(Colors.SkyBlue);
+                        _item.Content = localSettings.Values[key1].ToString();
+                        _item.FontSize = 20;
+                        _item.MinWidth = 80;
+                        _item.MinHeight = 60;
+                        _item.PointerEntered += buttonsPressed;
+                        _item.PointerExited += buttonsReleased;
+                        buttonsGridView.Items.Add(_item);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else
+            {
+                btnCount = 0;
+                buttonsGridView.Items.Clear();
+            }
+            if (localSettings.Values.ContainsKey("KEEPSCREENON"))
+                if((bool)localSettings.Values["KEEPSCREENON"])
+                {
+                    var displayRequest = new Windows.System.Display.DisplayRequest();
+                    displayRequest.RequestActive();
+                }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            if (localSettings.Values.ContainsKey("KEEPSCREENON"))
+                if ((bool)localSettings.Values["KEEPSCREENON"])
+                {
+                    var displayRequest = new Windows.System.Display.DisplayRequest();
+                    displayRequest.RequestActive();
+                }
         }
 
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
@@ -185,8 +249,16 @@ namespace YokeEmulator
                     by.CopyTo(buff, 1);
                     bz.CopyTo(buff, 9);
                     buff[0] = 255;
-                    buff[AxisMsgSize-1] = 0;
-                    await axisSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                    buff[AxisMsgSize - 1] = 0;
+                    try
+                    {
+                        await axisSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                    }
+                    catch
+                    {
+                        onLoseConnect();
+                    }
+                    
                 }
             }
         }
@@ -195,126 +267,21 @@ namespace YokeEmulator
         {
             if (connected)
             {
-                byte[] param = BitConverter.GetBytes(e.NewValue/100.0);   
+                byte[] param = BitConverter.GetBytes(e.NewValue / 100.0);
 
                 byte[] buff = new byte[CtlMsgSize];
                 buff[1] = (byte)'t';
                 param.CopyTo(buff, 2);
                 buff[0] = 255;
-                buff[CtlMsgSize-1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-            }
-        }
-
-        private async void Btn1_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = 1;
-                buff[3] = 1;
                 buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-            }
-        }
-
-        private async void Btn1_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = 1;
-                buff[3] = 0;
-                buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-            }
-        }
-
-        private async void Btn2_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = 2;
-                buff[3] = 1;
-                buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-            }
-        }
-
-        private async void Btn2_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = 2;
-                buff[3] = 0;
-                buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-            }
-        }
-
-        private async void Btn3_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = 3;
-                buff[3] = 1;
-                buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-            }
-        }
-
-        private async void Btn3_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = 3;
-                buff[3] = 0;
-                buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-            }
-        }
-
-        private async void Btn4_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = 4;
-                buff[3] = 1;
-                buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-            }
-        }
-
-        private async void Btn4_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = 4;
-                buff[3] = 0;
-                buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                try
+                {
+                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
+                }
             }
         }
 
@@ -338,7 +305,14 @@ namespace YokeEmulator
                 buff[1] = (byte)'p';
                 angle.CopyTo(buff, 2);
                 buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                try
+                {
+                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
+                }
             }
         }
 
@@ -362,8 +336,91 @@ namespace YokeEmulator
                 buff[1] = (byte)'p';
                 angleByte.CopyTo(buff, 2);
                 buff[CtlMsgSize - 1] = 0;
-                await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                try
+                {
+                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
+                }
             }
+        }
+
+        private async void buttonsPressed(object sender, PointerRoutedEventArgs e)
+        {
+            int btn = buttonsGridView.Items.IndexOf(sender);
+            GridViewItem _item = (GridViewItem)sender;
+            if (connected)
+            {
+                byte[] buff = new byte[CtlMsgSize];
+                buff[0] = 255;
+                buff[1] = (byte)'b';
+                buff[2] = (byte)(btn+1);
+                if (isToggle[btn] == 1)
+                {
+                    buff[3] = 0;
+                    isToggle[btn] = 0;
+                    _item.Background = new SolidColorBrush(Colors.SkyBlue);
+                }
+                else if (isToggle[btn] == 0)
+                {
+                    buff[3] = 1;
+                    isToggle[btn] = 1;
+                    _item.Background = new SolidColorBrush(Colors.OrangeRed);
+                }
+                else
+                {
+                    buff[3] = 1;
+                    _item.Background = new SolidColorBrush(Colors.OrangeRed);
+                }
+                    
+                buff[CtlMsgSize - 1] = 0;
+                try
+                { 
+                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
+                }
+            }
+            pressedBtn = btn;
+        }
+        private async void buttonsReleased(object sender, PointerRoutedEventArgs e)
+        {
+            int btn = buttonsGridView.Items.IndexOf(sender);
+            if (isToggle[btn] != 2)
+                return;
+            GridViewItem _item = (GridViewItem)sender;
+            _item.Background = new SolidColorBrush(Colors.SkyBlue);
+            if (connected)
+            {
+                byte[] buff = new byte[CtlMsgSize];
+                buff[0] = 255;
+                buff[1] = (byte)'b';
+                buff[2] = (byte)(btn+1);
+                buff[3] = 0;
+                buff[CtlMsgSize - 1] = 0;
+                try
+                {
+                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
+                }
+
+            }
+            pressedBtn = -1;
+        }
+        private async void onLoseConnect()
+        {
+            connectBtn.Background = new SolidColorBrush(Colors.Red);
+            connectBtn.Content = "LOSE";
+            connected = false;
+            axisSocket.Dispose();
+            ctlSocket.Dispose();
         }
     }
 }

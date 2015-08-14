@@ -28,11 +28,41 @@
         </StackPanel>
 
         <!--TODO: 应将内容放入以下网格-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <TextBox x:Name="ipTextBox" HorizontalAlignment="Left" Margin="139,14,0,0" TextWrapping="Wrap" Text="192.168.1.101" VerticalAlignment="Top" Width="199" Height="24" FontSize="20"/>
-            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="26,24,0,0" TextWrapping="Wrap" Text="Server IP:" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="acceptBtn" Content="Accept" HorizontalAlignment="Left" Margin="277,187,0,0" VerticalAlignment="Top" Click="acceptBtn_Click"/>
-            <Button x:Name="cancelBtn" Content="Cancel" HorizontalAlignment="Left" Margin="403,187,0,0" VerticalAlignment="Top" Click="cancelBtn_Click"/>
+        <Grid Grid.Row="1" x:Name="ContentRoot">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="215"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <ScrollViewer Grid.Row="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Server IP:" FontSize="20" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Button Count" FontSize="20"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Prevent Lock" FontSize="20"/>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Button Label" VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="20" />
+                    <TextBox Grid.Row="0" Grid.Column="1" x:Name="ipTextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="192.168.1.101" Width="240" FontSize="20" InputScope="Number"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="btnCountTextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="0" Width="240" FontSize="20" InputScope="Number" TextChanged="btnCountTextBox_TextChanged"/>
+                    <ToggleSwitch Grid.Row="2" Grid.Column="1" x:Name="keepScreen"/>
+                    <StackPanel Grid.Row="3" Grid.Column="1" x:Name="editStack" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="acceptBtn" Content="Accept" HorizontalAlignment="Right" VerticalAlignment="Top" Click="acceptBtn_Click"/>
+                <Button x:Name="cancelBtn" Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Top" Click="cancelBtn_Click"/>
+            </StackPanel>
+
         </Grid>
     </Grid>
 </Page>

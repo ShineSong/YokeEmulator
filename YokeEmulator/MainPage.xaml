@@ -16,22 +16,18 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="301*"/>
+            <ColumnDefinition Width="246*"/>
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="connectBtn" Content="Connect" HorizontalAlignment="Left" VerticalAlignment="Top" Height="58" Width="109" Click="connectBtn_Click"/>
-        <Slider x:Name="throttleSlider" HorizontalAlignment="Left" Margin="476,47,0,0" VerticalAlignment="Top" Width="41" Orientation="Vertical" Height="245" ManipulationMode="None" ValueChanged="throttleSlider_ValueChanged"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="463,14,0,0" TextWrapping="Wrap" Text="Throttle" VerticalAlignment="Top" Height="28" Width="71" FontSize="18.667"/>
-        <Button x:Name="accelerometerBtn" Content="ON" HorizontalAlignment="Left" Margin="0,67,0,0" VerticalAlignment="Top" Height="117" Width="109" Background="Red" Click="accelerometerBtn_Click"/>
-        <TextBlock x:Name="msgTextBlock" HorizontalAlignment="Left" Margin="10,187,0,0" TextWrapping="Wrap" Text="MSGBOX" VerticalAlignment="Top" Height="16" Width="87" FontSize="16"/>
-        <Rectangle x:Name="Btn1" Fill="#FF2ECD9A" HorizontalAlignment="Left" Height="43" Margin="342,178,0,0" Stroke="Black" VerticalAlignment="Top" Width="109" PointerPressed="Btn1_PointerPressed" PointerReleased="Btn1_PointerReleased" />
-        <TextBlock x:Name="Btn1_label" HorizontalAlignment="Left" Margin="371,187,0,0" TextWrapping="Wrap" Text="BTN1" VerticalAlignment="Top" FontSize="20" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" ManipulationMode="None" IsHitTestVisible="False"/>
-        <Rectangle x:Name="Btn2" Fill="#FF2ECD9A" HorizontalAlignment="Left" Height="43" Margin="342,225,0,0" Stroke="Black" VerticalAlignment="Top" Width="109" PointerPressed="Btn2_PointerPressed" PointerReleased="Btn2_PointerReleased" />
-        <TextBlock x:Name="Btn2_label" HorizontalAlignment="Left" Margin="371,234,0,0" TextWrapping="Wrap" Text="BTN2" VerticalAlignment="Top" FontSize="20" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" ManipulationMode="None" IsHitTestVisible="False"/>
-        <Rectangle x:Name="Btn3" Fill="#FF2ECD9A" HorizontalAlignment="Left" Height="43" Margin="342,273,0,0" Stroke="Black" VerticalAlignment="Top" Width="109" PointerPressed="Btn3_PointerPressed" PointerReleased="Btn3_PointerReleased" />
-        <TextBlock x:Name="Btn3_label" HorizontalAlignment="Left" Margin="371,282,0,0" TextWrapping="Wrap" Text="BTN3" VerticalAlignment="Top" FontSize="20" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" ManipulationMode="None" IsHitTestVisible="False"/>
-        <Rectangle x:Name="Btn4" Fill="#FF2ECD9A" HorizontalAlignment="Left" Height="43" Margin="342,320,0,0" Stroke="Black" VerticalAlignment="Top" Width="109" PointerPressed="Btn4_PointerPressed" PointerReleased="Btn4_PointerReleased" />
-        <TextBlock x:Name="Btn4_label" HorizontalAlignment="Left" Margin="371,329,0,0" TextWrapping="Wrap" Text="BTN4" VerticalAlignment="Top" FontSize="20" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" ManipulationMode="None" IsHitTestVisible="False"/>
-        <Canvas x:Name="povCtl" HorizontalAlignment="Left" Height="139" Margin="0,234,0,0" VerticalAlignment="Top" Width="139" PointerMoved="povCtl_PointerMoved" PointerPressed="povCtl_PointerPressed" PointerReleased="povCtl_PointerReleased"/>
+        <Button x:Name="connectBtn" Content="Connect" HorizontalAlignment="Left" VerticalAlignment="Top" Height="31" Width="70" Click="connectBtn_Click"/>
+        <Slider x:Name="throttleSlider" HorizontalAlignment="Left" Margin="175.167,47,0,0" VerticalAlignment="Top" Width="41" Orientation="Vertical" Height="191" ManipulationMode="None" ValueChanged="throttleSlider_ValueChanged" Grid.Column="1"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="161.979,14,0,0" TextWrapping="Wrap" Text="Throttle" VerticalAlignment="Top" Height="28" Width="71" FontSize="18.667" Grid.Column="1"/>
+        <Button x:Name="accelerometerBtn" Content="ON" Margin="0,38,0,304" Height="20" Width="20" Background="Red" Click="accelerometerBtn_Click"/>
+        <TextBlock x:Name="msgTextBlock" HorizontalAlignment="Left" Margin="120,19,0,0" TextWrapping="Wrap" Text="MSGBOX" VerticalAlignment="Top" Height="54" Width="41" FontSize="16"/>
+        <Canvas x:Name="povCtl" HorizontalAlignment="Left" Height="136" Margin="10,102,0,0" VerticalAlignment="Top" Width="131" PointerMoved="povCtl_PointerMoved" PointerPressed="povCtl_PointerPressed" PointerReleased="povCtl_PointerReleased"/>
+        <ScrollViewer HorizontalAlignment="Left" Margin="176,14,0,10" Width="270" BorderBrush="White" BorderThickness="1" Grid.ColumnSpan="2">
+            <GridView x:Name="buttonsGridView" HorizontalAlignment="Left"/>
+        </ScrollViewer>
     </Grid>
 </Page>

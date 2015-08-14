@@ -28,7 +28,7 @@ namespace YokeEmulator
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-
+        int btnCount;
         public Settings()
         {
             this.InitializeComponent();
@@ -102,10 +102,45 @@ namespace YokeEmulator
         {
             this.navigationHelper.OnNavigatedTo(e);
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+
             if (localSettings.Values.ContainsKey("IPADDR")) 
                 ipTextBox.Text = localSettings.Values["IPADDR"].ToString();
             else
                 ipTextBox.Text = "192.168.1.101";
+
+            if (localSettings.Values.ContainsKey("BTNCOUNT"))
+                btnCountTextBox.Text = localSettings.Values["BTNCOUNT"].ToString();
+            else
+                btnCountTextBox.Text = "0";
+
+            try
+            {
+                btnCount = int.Parse(btnCountTextBox.Text);
+            }
+            catch (Exception)
+            {
+                btnCount = 0;
+            }
+
+            for (int i = 0; i < btnCount; ++i)
+            {
+                StackPanel _panel = new StackPanel();
+                _panel.Orientation = Orientation.Horizontal;
+                TextBox _item = new TextBox();
+                _item.HorizontalAlignment = HorizontalAlignment.Left;
+                ToggleSwitch _switch = new ToggleSwitch();
+                _switch.OffContent = "按钮"; //松手改变状态
+                _switch.OnContent = "开关"; //松手不改变状态
+                _panel.Children.Add(_item);
+                _panel.Children.Add(_switch);
+                editStack.Children.Add(_panel);
+            }
+            fillBtnLabels();
+
+            if (localSettings.Values.ContainsKey("KEEPSCREENON"))
+                keepScreen.IsOn = (bool)localSettings.Values["KEEPSCREENON"];
+            else
+                keepScreen.IsOn = false;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -119,13 +154,109 @@ namespace YokeEmulator
         {
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             localSettings.Values["IPADDR"] = ipTextBox.Text;
-            string xx = localSettings.Values["IPADDR"].ToString();
+
+            try
+            {
+                btnCount = int.Parse(btnCountTextBox.Text);
+            }
+            catch (Exception)
+            {
+                btnCount = 0;
+            }
+            localSettings.Values["BTNCOUNT"] = btnCountTextBox.Text;
+
+            int count = editStack.Children.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                string key1 = "BTNLABEL" + i;
+                string key2 = "BTNTOGGLE" + i;
+                StackPanel _panel = (StackPanel)editStack.Children[i];
+                TextBox _box = (TextBox)_panel.Children[0];
+                ToggleSwitch _switch= (ToggleSwitch)_panel.Children[1];
+                localSettings.Values[key1] = _box.Text;
+                localSettings.Values[key2] = _switch.IsOn;
+            }
+
+            localSettings.Values["KEEPSCREENON"] = keepScreen.IsOn;
             this.Frame.GoBack();
         }
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.GoBack();
+        }
+
+        private void btnCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                btnCount = int.Parse(btnCountTextBox.Text);
+            }catch(Exception)
+            {
+                return;
+            }
+            if (btnCount > 128 || btnCount < 0)
+                return;
+            int curcount = editStack.Children.Count;
+            int diff = btnCount - curcount;
+            if (diff > 0)
+            {
+                for (int i = 0; i < diff; ++i)
+                {
+                    StackPanel _panel = new StackPanel();
+                    _panel.Orientation = Orientation.Horizontal;
+
+                    TextBox _item = new TextBox();
+                    _item.HorizontalAlignment = HorizontalAlignment.Left;
+                    ToggleSwitch _switch = new ToggleSwitch();
+                    _switch.OffContent = "按钮"; //松手改变状态
+                    _switch.OnContent = "开关"; //松手不改变状态
+                    _panel.Children.Add(_item);
+                    _panel.Children.Add(_switch);
+                    editStack.Children.Add(_panel);
+                }
+            }
+            else if (diff < 0)
+            {
+                for (int i = 0; i < -diff; ++i)
+                {
+                    editStack.Children.RemoveAt(editStack.Children.Count - 1);
+                }
+            }
+            else
+            {
+                return;
+            }
+            fillBtnLabels();
+        }
+        private void fillBtnLabels()
+        {
+            var localSettings= Windows.Storage.ApplicationData.Current.LocalSettings;
+            int count = editStack.Children.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                string key1 = "BTNLABEL" + i;
+                string key2 = "BTNTOGGLE" + i;
+                StackPanel _panel = (StackPanel)editStack.Children[i];
+                TextBox _box = (TextBox)_panel.Children[0];
+                ToggleSwitch _switch = (ToggleSwitch)_panel.Children[1];
+                if (localSettings.Values.ContainsKey(key1))
+                {
+                    _box.Text = localSettings.Values[key1].ToString();
+                }
+                else
+                {
+                    _box.Text = "BTN" + i;
+                }
+                if (localSettings.Values.ContainsKey(key2))
+                {
+                    _switch.IsOn = (bool)localSettings.Values[key2];
+                }
+                else
+                {
+                    _switch.IsOn = false;
+                }
+            }
         }
     }
 }
