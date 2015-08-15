@@ -241,8 +241,12 @@ namespace YokeEmulatorServer
             switch (command)
             {
                 case (byte)'t':
-                    double param = BitConverter.ToDouble(ctlBuffer, 2);
-                    joystick.SetAxis((int)(param * axisMaxval), id, HID_USAGES.HID_USAGE_SL0);
+                    double throttle = BitConverter.ToDouble(ctlBuffer, 2);
+                    joystick.SetAxis((int)(throttle * axisMaxval), id, HID_USAGES.HID_USAGE_SL0);
+                    break;
+                case (byte)'r':
+                    double rudder = BitConverter.ToDouble(ctlBuffer, 2);
+                    joystick.SetAxis((int)(rudder * axisMaxval), id, HID_USAGES.HID_USAGE_Z);
                     break;
                 case (byte)'b':
                     byte bid = ctlBuffer[2];

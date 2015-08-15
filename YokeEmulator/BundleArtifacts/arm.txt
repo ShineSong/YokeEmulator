@@ -1,0 +1,3 @@
+MainPackage=D:\Users\SxS\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\bin\ARM\Release\YokeEmulator_0.2.0.0_ARM.appx
+SymbolPackage=D:\Users\SxS\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\AppPackages\YokeEmulator_0.2.0.0_Test\YokeEmulator_0.2.0.0_ARM.appxsym
+ResourcePack=D:\Users\SxS\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\bin\ARM\Release\YokeEmulator_0.2.0.0_scale-100.appx

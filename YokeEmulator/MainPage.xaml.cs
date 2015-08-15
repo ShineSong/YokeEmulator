@@ -32,6 +32,7 @@ namespace YokeEmulator
     public sealed partial class MainPage : Page
     {
         Accelerometer accelerometer = null;
+        Gyrometer gyrometer = null;
         bool connected = false;
 
         StreamSocket axisSocket = null;
@@ -284,6 +285,50 @@ namespace YokeEmulator
                 }
             }
         }
+        private async void rudderSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            if (connected)
+            {
+                byte[] param = BitConverter.GetBytes(e.NewValue / 100.0);
+
+                byte[] buff = new byte[CtlMsgSize];
+                buff[1] = (byte)'r';
+                param.CopyTo(buff, 2);
+                buff[0] = 255;
+                buff[CtlMsgSize - 1] = 0;
+                try
+                {
+                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
+                }
+            }
+        }
+
+        private async void rudderSlider_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            rudderSlider.Value = 50;
+            if (connected)
+            {
+                byte[] param = BitConverter.GetBytes(0.5);
+
+                byte[] buff = new byte[CtlMsgSize];
+                buff[1] = (byte)'r';
+                param.CopyTo(buff, 2);
+                buff[0] = 255;
+                buff[CtlMsgSize - 1] = 0;
+                try
+                {
+                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
+                }
+            }
+        }
 
         private void povCtl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
@@ -421,6 +466,11 @@ namespace YokeEmulator
             connected = false;
             axisSocket.Dispose();
             ctlSocket.Dispose();
+        }
+
+        private void trackBtn_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            
         }
     }
 }

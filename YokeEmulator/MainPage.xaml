@@ -24,10 +24,16 @@
         <Slider x:Name="throttleSlider" HorizontalAlignment="Left" Margin="175.167,47,0,0" VerticalAlignment="Top" Width="41" Orientation="Vertical" Height="191" ManipulationMode="None" ValueChanged="throttleSlider_ValueChanged" Grid.Column="1"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="161.979,14,0,0" TextWrapping="Wrap" Text="Throttle" VerticalAlignment="Top" Height="28" Width="71" FontSize="18.667" Grid.Column="1"/>
         <Button x:Name="accelerometerBtn" Content="ON" Margin="0,38,0,304" Height="20" Width="20" Background="Red" Click="accelerometerBtn_Click"/>
-        <TextBlock x:Name="msgTextBlock" HorizontalAlignment="Left" Margin="120,19,0,0" TextWrapping="Wrap" Text="MSGBOX" VerticalAlignment="Top" Height="54" Width="41" FontSize="16"/>
+        <TextBlock x:Name="msgTextBlock" HorizontalAlignment="Left" Margin="42,260,0,0" TextWrapping="Wrap" Text="MSGBOX" VerticalAlignment="Top" Height="23" Width="99" FontSize="16"/>
         <Canvas x:Name="povCtl" HorizontalAlignment="Left" Height="136" Margin="10,102,0,0" VerticalAlignment="Top" Width="131" PointerMoved="povCtl_PointerMoved" PointerPressed="povCtl_PointerPressed" PointerReleased="povCtl_PointerReleased"/>
-        <ScrollViewer HorizontalAlignment="Left" Margin="176,14,0,10" Width="270" BorderBrush="White" BorderThickness="1" Grid.ColumnSpan="2">
+        <ScrollViewer HorizontalAlignment="Left" Margin="189,14,0,10" Width="270" BorderBrush="White" BorderThickness="1" Grid.ColumnSpan="2">
             <GridView x:Name="buttonsGridView" HorizontalAlignment="Left"/>
         </ScrollViewer>
+        <AppBarButton x:Name="trackBtn" Grid.Column="1" HorizontalAlignment="Left" Label="TRACK" Margin="162.167,296,0,0" VerticalAlignment="Top" PointerEntered="trackBtn_PointerEntered">
+            <AppBarButton.Icon>
+                <SymbolIcon/>
+            </AppBarButton.Icon>
+        </AppBarButton>
+        <Slider x:Name="rudderSlider" HorizontalAlignment="Left" Margin="10,337,0,0" VerticalAlignment="Top" Width="164" Height="53" Value="50" Foreground="{x:Null}" ValueChanged="rudderSlider_ValueChanged" PointerExited="rudderSlider_PointerExited"/>
     </Grid>
 </Page>
