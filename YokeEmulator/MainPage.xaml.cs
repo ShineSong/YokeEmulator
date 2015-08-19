@@ -36,21 +36,12 @@ namespace YokeEmulator
         enum SensorMode { NONE = 0, JOYSTICK = 1, TRACKER = 2 };
         SensorMode mode = SensorMode.NONE;
 
-        StreamSocket axisSocket = null;
-        const int AxisMsgSize = 18;
-
-        StreamSocket ctlSocket = null;
-        const int CtlMsgSize = 11;
-
-        DatagramSocket trackSocket = null;
-        const int trackMsgSize = 48;
         int trackPort = 4242;
 
         bool povTouched = false;
         Ellipse povPoint = null;
         const int povPointSize = 20;
 
-        int pressedBtn = -1;
         byte[] isToggle = null;
 
         public MainPage()
@@ -79,6 +70,8 @@ namespace YokeEmulator
             inclinometer.ReadingChanged += inclinometer_ReadingChanged;
             accelerometer = Accelerometer.GetDefault();
             accelerometer.ReadingChanged += accelerometer_ReadingChanged;
+
+            App.comHelper.ConnectLose += onLoseConnect;
         }
 
         /// <summary>
@@ -183,9 +176,7 @@ namespace YokeEmulator
                 //disconnecting
                 try
                 {
-                    axisSocket.Dispose();
-                    ctlSocket.Dispose();
-                    trackSocket.Dispose();
+                    App.comHelper.disconnect();
                     connected = false;
                     connectBtn.Foreground = new SolidColorBrush(Colors.Green);
                     connectBtn.Content = connected ? "DisConnect" : "Connect";
@@ -202,14 +193,7 @@ namespace YokeEmulator
                 {
                     //connecting
                     var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                    axisSocket = new StreamSocket();
-                    ctlSocket = new StreamSocket();
-                    trackSocket = new DatagramSocket();
-                    HostName hostname = new HostName(localSettings.Values["IPADDR"].ToString());
-                    await axisSocket.ConnectAsync(hostname, "23333");
-                    await ctlSocket.ConnectAsync(hostname, "23334");
-                    await trackSocket.ConnectAsync(hostname, trackPort.ToString());
-
+                    await App.comHelper.connect(localSettings.Values["IPADDR"].ToString(), trackPort);
                     connected = true;
                     connectBtn.Foreground = new SolidColorBrush(Colors.Green);
                     connectBtn.Content = connected ? "DisConnect" : "Connect";
@@ -229,36 +213,15 @@ namespace YokeEmulator
                             connectBtn.Content = "FAILED";
                             break;
                     }
-                    axisSocket.Dispose();
-                    ctlSocket.Dispose();
-                    trackSocket.Dispose();
+                    App.comHelper.disconnect();
                 }
             }
         }
 
-        async void accelerometer_ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
+        void accelerometer_ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
             if (connected && mode == SensorMode.JOYSTICK)
-            {
-                //byte[] bx = BitConverter.GetBytes(e.Reading.AccelerationX);
-                byte[] by = BitConverter.GetBytes(-e.Reading.AccelerationY * 0.5 + 0.5);
-                byte[] bz = BitConverter.GetBytes(-e.Reading.AccelerationX+0.5);
-
-                byte[] buff = new byte[AxisMsgSize];
-                by.CopyTo(buff, 1);
-                bz.CopyTo(buff, 9);
-                buff[0] = 255;
-                buff[AxisMsgSize - 1] = 0;
-                try
-                {
-                    await axisSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
-
-            }
+                App.comHelper.sendAxis(-e.Reading.AccelerationY * 0.5 + 0.5, -e.Reading.AccelerationX + 0.5);
         }
 
         async void inclinometer_ReadingChanged(object sender, InclinometerReadingChangedEventArgs e)
@@ -287,96 +250,25 @@ namespace YokeEmulator
             });
 
             if (connected && mode == SensorMode.TRACKER)
-            {
-
-                double pitch = reading.PitchDegrees;
-                if (pitch < -90)
-                    pitch = -pitch - 180;
-                else if (pitch > 90)
-                    pitch = 180 - pitch;
-
-                byte[] rx = BitConverter.GetBytes((double)-reading.YawDegrees);
-                byte[] ry = BitConverter.GetBytes((double)-reading.RollDegrees);
-                byte[] rz = BitConverter.GetBytes((double)-reading.PitchDegrees);
-                byte[] buff = new byte[trackMsgSize];
-                rx.CopyTo(buff, 24);
-                ry.CopyTo(buff, 32);
-                rz.CopyTo(buff, 40);
-                try
-                {
-                    await trackSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
-            }
+                App.comHelper.sendTrack(-reading.YawDegrees, -reading.RollDegrees, -reading.PitchDegrees);
         }
 
         private async void throttleSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (connected)
-            {
-                byte[] param = BitConverter.GetBytes(e.NewValue / 100.0);
-
-                byte[] buff = new byte[CtlMsgSize];
-                buff[1] = (byte)'t';
-                param.CopyTo(buff, 2);
-                buff[0] = 255;
-                buff[CtlMsgSize - 1] = 0;
-                try
-                {
-                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
-            }
+                App.comHelper.sendCtl((byte)'t', e.NewValue / 100.0);
         }
-        private async void rudderSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        private void rudderSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (connected)
-            {
-                byte[] param = BitConverter.GetBytes(e.NewValue / 100.0);
-
-                byte[] buff = new byte[CtlMsgSize];
-                buff[1] = (byte)'r';
-                param.CopyTo(buff, 2);
-                buff[0] = 255;
-                buff[CtlMsgSize - 1] = 0;
-                try
-                {
-                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
-            }
+                App.comHelper.sendCtl((byte)'r', e.NewValue / 100.0);
         }
 
-        private async void rudderSlider_PointerExited(object sender, PointerRoutedEventArgs e)
+        private void rudderSlider_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             rudderSlider.Value = 50;
             if (connected)
-            {
-                byte[] param = BitConverter.GetBytes(0.5);
-
-                byte[] buff = new byte[CtlMsgSize];
-                buff[1] = (byte)'r';
-                param.CopyTo(buff, 2);
-                buff[0] = 255;
-                buff[CtlMsgSize - 1] = 0;
-                try
-                {
-                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
-            }
+                App.comHelper.sendCtl((byte)'r', 0.5);
         }
 
         private void povCtl_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -384,33 +276,20 @@ namespace YokeEmulator
             povTouched = true;
         }
 
-        private async void povCtl_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private void povCtl_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             povTouched = false;
             var margin = povPoint.Margin;
             margin.Left = povCtl.Width / 2 - povPointSize / 2;
             margin.Top = povCtl.Height / 2 - povPointSize / 2;
             povPoint.Margin = margin;
+
+
             if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                byte[] angle = BitConverter.GetBytes((double)-1);
-                buff[0] = 255;
-                buff[1] = (byte)'p';
-                angle.CopyTo(buff, 2);
-                buff[CtlMsgSize - 1] = 0;
-                try
-                {
-                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
-            }
+                App.comHelper.sendCtl((byte)'p', -1);
         }
 
-        private async void povCtl_PointerMoved(object sender, PointerRoutedEventArgs e)
+        private void povCtl_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             if (povTouched && connected)
             {
@@ -424,64 +303,36 @@ namespace YokeEmulator
                 double dy = _curpoint.Position.Y - povCtl.Height / 2;
                 double angle = 180 - Math.Atan2(dx, dy) * 180 / Math.PI;
 
-                byte[] buff = new byte[CtlMsgSize];
-                byte[] angleByte = BitConverter.GetBytes(angle);
-                buff[0] = 255;
-                buff[1] = (byte)'p';
-                angleByte.CopyTo(buff, 2);
-                buff[CtlMsgSize - 1] = 0;
-                try
-                {
-                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
+                App.comHelper.sendCtl((byte)'p',angle);
             }
         }
 
-        private async void buttonsPressed(object sender, PointerRoutedEventArgs e)
+        private void buttonsPressed(object sender, PointerRoutedEventArgs e)
         {
             int btn = buttonsGridView.Items.IndexOf(sender);
             GridViewItem _item = (GridViewItem)sender;
             if (connected)
             {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = (byte)(btn + 1);
                 if (isToggle[btn] == 1)
                 {
-                    buff[3] = 0;
+                    App.comHelper.sendCtl((byte)btn, 0);
                     isToggle[btn] = 0;
                     _item.Background = new SolidColorBrush(Colors.SkyBlue);
                 }
                 else if (isToggle[btn] == 0)
                 {
-                    buff[3] = 1;
+                    App.comHelper.sendCtl((byte)btn, 1);
                     isToggle[btn] = 1;
                     _item.Background = new SolidColorBrush(Colors.OrangeRed);
                 }
                 else
                 {
-                    buff[3] = 1;
+                    App.comHelper.sendCtl((byte)btn, 1);
                     _item.Background = new SolidColorBrush(Colors.OrangeRed);
                 }
-
-                buff[CtlMsgSize - 1] = 0;
-                try
-                {
-                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
             }
-            pressedBtn = btn;
         }
-        private async void buttonsReleased(object sender, PointerRoutedEventArgs e)
+        private void buttonsReleased(object sender, PointerRoutedEventArgs e)
         {
             int btn = buttonsGridView.Items.IndexOf(sender);
             if (isToggle[btn] != 2)
@@ -489,35 +340,15 @@ namespace YokeEmulator
             GridViewItem _item = (GridViewItem)sender;
             _item.Background = new SolidColorBrush(Colors.SkyBlue);
             if (connected)
-            {
-                byte[] buff = new byte[CtlMsgSize];
-                buff[0] = 255;
-                buff[1] = (byte)'b';
-                buff[2] = (byte)(btn + 1);
-                buff[3] = 0;
-                buff[CtlMsgSize - 1] = 0;
-                try
-                {
-                    await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                }
-                catch
-                {
-                    onLoseConnect();
-                }
-
-            }
-            pressedBtn = -1;
+                App.comHelper.sendCtl((byte)btn, 0);
         }
+
         private void onLoseConnect()
         {
             connectBtn.Background = new SolidColorBrush(Colors.Red);
+            connectBtn.Foreground = new SolidColorBrush(Colors.White);
             connectBtn.Content = "LOSE";
             connected = false;
-            axisSocket.Dispose();
-            ctlSocket.Dispose();
-
-            //reconnected;
-            connectBtn_Click(connectBtn, new RoutedEventArgs());
         }
 
         private void ModeSwitcher_Click(object sender, PointerRoutedEventArgs e)
