@@ -16,13 +16,12 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// “基本页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
+using Windows.Phone.UI.Input;
 
 namespace YokeEmulator
 {
     /// <summary>
-    /// 可用于自身或导航至 Frame 内部的空白页。
+    /// YokeEmulator设置项页面
     /// </summary>
     public sealed partial class Settings : Page
     {
@@ -36,7 +35,6 @@ namespace YokeEmulator
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-            
         }
 
         /// <summary>
@@ -147,13 +145,22 @@ namespace YokeEmulator
             else
                 keepScreen.IsOn = false;
         }
-
+        /// <summary>
+        /// 跳转前调用
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedFrom(e);
         }
 
         #endregion
+        
+        /// <summary>
+        /// Accept按钮事件,保存页面内容
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
         private void acceptBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -187,11 +194,21 @@ namespace YokeEmulator
             this.Frame.GoBack();
         }
 
+        /// <summary>
+        /// 不保存内容退出页面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.GoBack();
         }
 
+        /// <summary>
+        /// 按钮数量改变时,刷新列表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             try
@@ -235,6 +252,10 @@ namespace YokeEmulator
             }
             fillBtnLabels();
         }
+
+        /// <summary>
+        /// 读取本地存储中的按键名称字段,并放入TextBox中
+        /// </summary>
         private void fillBtnLabels()
         {
             var localSettings= Windows.Storage.ApplicationData.Current.LocalSettings;

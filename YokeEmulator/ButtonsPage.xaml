@@ -9,11 +9,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton>
+            <AppBarButton x:Name="mainPageButton" Height="100" Label="MainPage" Width="100" Click="mainPageButton_Click">
                 <AppBarButton.Icon>
-                    <FontIcon Glyph="Main" FontSize="15"/>
+                    <FontIcon Glyph="Main" FontSize="14"/>
                 </AppBarButton.Icon>
-                <AppBarButton x:Name="appBarButton" Height="100" Icon="Accept" Label="appbarbutton" Width="100" Click="appBarButton_Click"/>
             </AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>

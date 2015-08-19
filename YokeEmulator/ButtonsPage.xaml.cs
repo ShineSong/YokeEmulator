@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Phone.UI.Input;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -61,8 +62,8 @@ namespace YokeEmulator
                         _item.FontSize = 20;
                         _item.MinWidth = 80;
                         _item.MinHeight = 60;
-//                        _item.PointerEntered += buttonsPressed;
-//                       _item.PointerExited += buttonsReleased;
+                        _item.PointerEntered += buttonsPressed;
+                       _item.PointerExited += buttonsReleased;
                         buttonsGridView.Items.Add(_item);
                     }
                 }
@@ -77,10 +78,63 @@ namespace YokeEmulator
                 buttonsGridView.Items.Clear();
             }
         }
+        /// <summary>
+        /// 按钮相应
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
-        private void appBarButton_Click(object sender, RoutedEventArgs e)
+        private void buttonsPressed(object sender, PointerRoutedEventArgs e)
         {
-            Frame.GoBack();
+            int btn = buttonsGridView.Items.IndexOf(sender);
+            GridViewItem _item = (GridViewItem)sender;
+            if (App.comHelper.connected)
+            {
+                if (isToggle[btn] == 1)
+                {
+                    App.comHelper.sendCtl((byte)btn, 0);
+                    isToggle[btn] = 0;
+                    _item.Background = new SolidColorBrush(Colors.SkyBlue);
+                }
+                else if (isToggle[btn] == 0)
+                {
+                    App.comHelper.sendCtl((byte)btn, 1);
+                    isToggle[btn] = 1;
+                    _item.Background = new SolidColorBrush(Colors.OrangeRed);
+                }
+                else
+                {
+                    App.comHelper.sendCtl((byte)btn, 1);
+                    _item.Background = new SolidColorBrush(Colors.OrangeRed);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 按钮相应
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void buttonsReleased(object sender, PointerRoutedEventArgs e)
+        {
+            int btn = buttonsGridView.Items.IndexOf(sender);
+            if (isToggle[btn] != 2)
+                return;
+            GridViewItem _item = (GridViewItem)sender;
+            _item.Background = new SolidColorBrush(Colors.SkyBlue);
+            if (App.comHelper.connected)
+                App.comHelper.sendCtl((byte)btn, 0);
+        }
+
+        /// <summary>
+        /// 退回主页面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mainPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.GoBack();
         }
     }
 }

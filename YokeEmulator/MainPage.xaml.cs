@@ -25,7 +25,7 @@ namespace YokeEmulator
 {
 
     /// <summary>
-    /// 可用于自身或导航至 Frame 内部的空白页。
+    /// YokeEmulator主页面
     /// </summary>
     public sealed partial class MainPage : Page
     {
@@ -42,19 +42,20 @@ namespace YokeEmulator
         Ellipse povPoint = null;
         const int povPointSize = 20;
 
-        byte[] isToggle = null;
+        byte[] isToggle = null; // 0 for release 1 for pressed 2 for only click.
 
         public MainPage()
         {
             this.InitializeComponent();
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
+
+            //POV椭圆绘制
             Ellipse bgEllipse = new Ellipse();
             bgEllipse.Width = povCtl.Width;
             bgEllipse.Height = povCtl.Height;
             bgEllipse.Fill = new SolidColorBrush(Colors.SkyBlue);
             povCtl.Children.Add(bgEllipse);
-
             povPoint = new Ellipse();
             var margin = povPoint.Margin;
             margin.Left = povCtl.Width / 2 - povPointSize / 2;
@@ -65,12 +66,12 @@ namespace YokeEmulator
             povPoint.Fill = new SolidColorBrush(Colors.Red);
             povPoint.Stroke = new SolidColorBrush(Colors.Yellow);
             povCtl.Children.Add(povPoint);
-
+            //传感器初始化
             inclinometer = Inclinometer.GetDefault();
             inclinometer.ReadingChanged += inclinometer_ReadingChanged;
             accelerometer = Accelerometer.GetDefault();
             accelerometer.ReadingChanged += accelerometer_ReadingChanged;
-
+            //连接丢失响应
             App.comHelper.ConnectLose += onLoseConnect;
         }
 
@@ -81,13 +82,6 @@ namespace YokeEmulator
         /// 此参数通常用于配置页。</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // TODO: 准备此处显示的页面。
-
-            // TODO: 如果您的应用程序包含多个页面，请确保
-            // 通过注册以下事件来处理硬件“后退”按钮:
-            // Windows.Phone.UI.Input.HardwareButtons.BackPressed 事件。
-            // 如果使用由某些模板提供的 NavigationHelper，
-            // 则系统会为您处理该事件。
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             int btnCount;
             if (localSettings.Values.ContainsKey("BTNCOUNT"))
@@ -145,7 +139,10 @@ namespace YokeEmulator
                     trackPort = 4242;
                 }
         }
-
+        /// <summary>
+        /// 跳转前调用
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
@@ -159,16 +156,41 @@ namespace YokeEmulator
                 }
         }
 
+        /// <summary>
+        /// 跳转到设置页面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SettingsBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(Settings));
         }
 
+        /// <summary>
+        /// 跳转到按钮页面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonsPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ButtonsPage));
+        }
+
+        /// <summary>
+        /// 跳转到校准界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CalibrationBtn_Click(object sender, RoutedEventArgs e)
         {
             
         }
 
+        /// <summary>
+        /// 连接到Server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void connectBtn_Click(object sender, RoutedEventArgs e)
         {
             if (connected)
@@ -193,10 +215,20 @@ namespace YokeEmulator
                 {
                     //connecting
                     var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                    await App.comHelper.connect(localSettings.Values["IPADDR"].ToString(), trackPort);
-                    connected = true;
-                    connectBtn.Foreground = new SolidColorBrush(Colors.Green);
-                    connectBtn.Content = connected ? "DisConnect" : "Connect";
+                    if (localSettings.Values.ContainsKey("IPADDR"))
+                    {
+                        await App.comHelper.connect(localSettings.Values["IPADDR"].ToString(), trackPort);
+                        connected = true;
+                        connectBtn.Foreground = new SolidColorBrush(Colors.Green);
+                        connectBtn.Content = connected ? "DisConnect" : "Connect";
+                    }
+                    else
+                    {
+                        connected = true;
+                        connectBtn.Content = "NoConfig";
+                        connectBtn.Foreground = new SolidColorBrush(Colors.Red);
+                    }
+                    
                 }
                 catch (Exception exception)
                 {
@@ -204,11 +236,13 @@ namespace YokeEmulator
                     {
                         case SocketErrorStatus.HostNotFound:
                             // Handle HostNotFound Error
+                            connectBtn.Background = new SolidColorBrush();
                             connectBtn.Foreground = new SolidColorBrush(Colors.Red);
                             connectBtn.Content = "HostNotFound";
                             break;
                         default:
                             // Handle Unknown Error
+                            connectBtn.Background = new SolidColorBrush();
                             connectBtn.Foreground = new SolidColorBrush(Colors.Red);
                             connectBtn.Content = "FAILED";
                             break;
@@ -218,12 +252,21 @@ namespace YokeEmulator
             }
         }
 
+        /// <summary>
+        /// 加速计读数作为摇杆数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void accelerometer_ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
             if (connected && mode == SensorMode.JOYSTICK)
                 App.comHelper.sendAxis(-e.Reading.AccelerationY * 0.5 + 0.5, -e.Reading.AccelerationX + 0.5);
         }
-
+        /// <summary>
+        /// 磁倾仪度数作为头瞄数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         async void inclinometer_ReadingChanged(object sender, InclinometerReadingChangedEventArgs e)
         {
             InclinometerReading reading = e.Reading;
@@ -252,18 +295,31 @@ namespace YokeEmulator
             if (connected && mode == SensorMode.TRACKER)
                 App.comHelper.sendTrack(-reading.YawDegrees, -reading.RollDegrees, -reading.PitchDegrees);
         }
-
-        private async void throttleSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        /// <summary>
+        /// 油门滑块,映射到slider 1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void throttleSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (connected)
                 App.comHelper.sendCtl((byte)'t', e.NewValue / 100.0);
         }
+        /// <summary>
+        /// 脚舵滑块,映射到Z Axis
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void rudderSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             if (connected)
                 App.comHelper.sendCtl((byte)'r', e.NewValue / 100.0);
         }
-
+        /// <summary>
+        /// 脚舵离手置中
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void rudderSlider_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             rudderSlider.Value = 50;
@@ -271,11 +327,21 @@ namespace YokeEmulator
                 App.comHelper.sendCtl((byte)'r', 0.5);
         }
 
+        /// <summary>
+        /// 苦力帽按下
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void povCtl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             povTouched = true;
         }
 
+        /// <summary>
+        /// 苦力帽松开置中
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void povCtl_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             povTouched = false;
@@ -289,6 +355,11 @@ namespace YokeEmulator
                 App.comHelper.sendCtl((byte)'p', -1);
         }
 
+        /// <summary>
+        /// 计算苦力帽角度
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void povCtl_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             if (povTouched && connected)
@@ -307,6 +378,11 @@ namespace YokeEmulator
             }
         }
 
+        /// <summary>
+        /// 按钮按下
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonsPressed(object sender, PointerRoutedEventArgs e)
         {
             int btn = buttonsGridView.Items.IndexOf(sender);
@@ -332,6 +408,11 @@ namespace YokeEmulator
                 }
             }
         }
+        /// <summary>
+        /// 按钮松开
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonsReleased(object sender, PointerRoutedEventArgs e)
         {
             int btn = buttonsGridView.Items.IndexOf(sender);
@@ -342,7 +423,9 @@ namespace YokeEmulator
             if (connected)
                 App.comHelper.sendCtl((byte)btn, 0);
         }
-
+        /// <summary>
+        /// 丢失连接相应
+        /// </summary>
         private void onLoseConnect()
         {
             connectBtn.Background = new SolidColorBrush(Colors.Red);
@@ -350,7 +433,11 @@ namespace YokeEmulator
             connectBtn.Content = "LOSE";
             connected = false;
         }
-
+        /// <summary>
+        /// 传感器模式选择器
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ModeSwitcher_Click(object sender, PointerRoutedEventArgs e)
         {
             int idxitem = sensorModeGridView.Items.IndexOf(sender);
@@ -363,5 +450,6 @@ namespace YokeEmulator
             newItem.Background = oldBrush;
             mode = (SensorMode)idxitem;
         }
+
     }
 }

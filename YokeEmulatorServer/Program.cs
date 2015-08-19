@@ -21,7 +21,6 @@ namespace YokeEmulatorServer
         const int AxisPort = 23333;
         const int AxisMsgSize = 18;
 
-        static long sliderMaxval;
         static byte[] ctlBuffer = new byte[CtlMsgSize];
         const int CtlPort = 23334;
         const int CtlMsgSize = 11;

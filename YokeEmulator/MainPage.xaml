@@ -9,6 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.BottomAppBar>
         <CommandBar RenderTransformOrigin="0.5,0.5" Width="50" Margin="0,1">
+            <AppBarButton x:Name="buttonsPageButton" Label="ButtonsPage" Icon="Keyboard" Click="buttonsPageButton_Click"/>
             <AppBarButton x:Name="CalibrationBtn" Icon="CellPhone" Label="Calibration" Click="CalibrationBtn_Click"/>
             <AppBarButton x:Name="SettingsBtn" Icon="Setting" Label="Settings" Click="SettingsBtn_Click"/>
         </CommandBar>
