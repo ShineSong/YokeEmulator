@@ -116,13 +116,21 @@ namespace YokeEmulatorServer
                 axisTcp = new TcpListener(IPAddress.Any, AxisPort);
                 axisTcp.Start(1);
                 axisTcp.BeginAcceptSocket(axisClientConnect, axisTcp);
-                
+
                 TcpListener ctlTcp;
                 ctlTcp = new TcpListener(IPAddress.Any, CtlPort);
                 ctlTcp.Start(1);
                 ctlTcp.BeginAcceptSocket(ctlClientConnect, ctlTcp);
                 Console.WriteLine("started listening...");
 
+                IPAddress[] arrIPAddresses = Dns.GetHostAddresses(Dns.GetHostName());
+                foreach (IPAddress ip in arrIPAddresses)
+                {
+                    if (ip.AddressFamily.Equals(AddressFamily.InterNetwork))
+                    {
+                        Console.WriteLine(ip.ToString());
+                    }
+                }
             }
             catch (System.Security.SecurityException)
             {
@@ -135,7 +143,7 @@ namespace YokeEmulatorServer
 
             while (true) Thread.Sleep(1000000);
         }
-        
+
         static void axisClientConnect(IAsyncResult ar)
         {
             TcpListener ServerSocket = (TcpListener)ar.AsyncState;
@@ -171,12 +179,12 @@ namespace YokeEmulatorServer
                 Console.WriteLine("Axis Channel Disconnect.");
                 return;
             }
-            if (ByteRead ==0)
+            if (ByteRead == 0)
             {
                 Console.WriteLine("Axis Channel Disconnect.");
                 return;
             }
-            else if(ByteRead <AxisMsgSize)
+            else if (ByteRead < AxisMsgSize)
             {
                 Console.WriteLine("Axis Channel Error Connect.");
                 Console.Beep();
@@ -255,9 +263,9 @@ namespace YokeEmulatorServer
                     break;
                 case (byte)'p':
                     double pov = BitConverter.ToDouble(ctlBuffer, 2);
-                    if(pov>0)
+                    if (pov > 0)
                         if (isPovCon)
-                            joystick.SetContPov((int)pov*100, id, 1);
+                            joystick.SetContPov((int)pov * 100, id, 1);
                         else
                         {
                             int ori = 0;

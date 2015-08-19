@@ -19,21 +19,22 @@ using Windows.Storage.Streams;
 using Windows.Devices.Sensors;
 using Windows.Networking.Sockets;
 using Windows.Networking;
-
-
-
-// “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=391641 上有介绍
+using Windows.UI.Core;
 
 namespace YokeEmulator
 {
+
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
     public sealed partial class MainPage : Page
     {
         Accelerometer accelerometer = null;
-        Gyrometer gyrometer = null;
+        Inclinometer inclinometer = null;
         bool connected = false;
+
+        enum SensorMode { NONE = 0, JOYSTICK = 1, TRACKER = 2 };
+        SensorMode mode = SensorMode.NONE;
 
         StreamSocket axisSocket = null;
         const int AxisMsgSize = 18;
@@ -41,12 +42,17 @@ namespace YokeEmulator
         StreamSocket ctlSocket = null;
         const int CtlMsgSize = 11;
 
+        DatagramSocket trackSocket = null;
+        const int trackMsgSize = 48;
+        int trackPort = 4242;
+
         bool povTouched = false;
         Ellipse povPoint = null;
         const int povPointSize = 20;
 
         int pressedBtn = -1;
-        byte[] isToggle=null;
+        byte[] isToggle = null;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -69,7 +75,10 @@ namespace YokeEmulator
             povPoint.Stroke = new SolidColorBrush(Colors.Yellow);
             povCtl.Children.Add(povPoint);
 
-
+            inclinometer = Inclinometer.GetDefault();
+            inclinometer.ReadingChanged += inclinometer_ReadingChanged;
+            accelerometer = Accelerometer.GetDefault();
+            accelerometer.ReadingChanged += accelerometer_ReadingChanged;
         }
 
         /// <summary>
@@ -127,10 +136,20 @@ namespace YokeEmulator
                 buttonsGridView.Items.Clear();
             }
             if (localSettings.Values.ContainsKey("KEEPSCREENON"))
-                if((bool)localSettings.Values["KEEPSCREENON"])
+                if ((bool)localSettings.Values["KEEPSCREENON"])
                 {
                     var displayRequest = new Windows.System.Display.DisplayRequest();
                     displayRequest.RequestActive();
+                }
+
+            if (localSettings.Values.ContainsKey("TRACKPORT"))
+                try
+                {
+                    trackPort = int.Parse(localSettings.Values["TRACKPORT"].ToString());
+                }
+                catch (Exception)
+                {
+                    trackPort = 4242;
                 }
         }
 
@@ -154,6 +173,7 @@ namespace YokeEmulator
 
         private void CalibrationBtn_Click(object sender, RoutedEventArgs e)
         {
+            
         }
 
         private async void connectBtn_Click(object sender, RoutedEventArgs e)
@@ -165,6 +185,7 @@ namespace YokeEmulator
                 {
                     axisSocket.Dispose();
                     ctlSocket.Dispose();
+                    trackSocket.Dispose();
                     connected = false;
                     connectBtn.Foreground = new SolidColorBrush(Colors.Green);
                     connectBtn.Content = connected ? "DisConnect" : "Connect";
@@ -183,9 +204,11 @@ namespace YokeEmulator
                     var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
                     axisSocket = new StreamSocket();
                     ctlSocket = new StreamSocket();
+                    trackSocket = new DatagramSocket();
                     HostName hostname = new HostName(localSettings.Values["IPADDR"].ToString());
                     await axisSocket.ConnectAsync(hostname, "23333");
                     await ctlSocket.ConnectAsync(hostname, "23334");
+                    await trackSocket.ConnectAsync(hostname, trackPort.ToString());
 
                     connected = true;
                     connectBtn.Foreground = new SolidColorBrush(Colors.Green);
@@ -208,58 +231,84 @@ namespace YokeEmulator
                     }
                     axisSocket.Dispose();
                     ctlSocket.Dispose();
+                    trackSocket.Dispose();
                 }
-            }
-        }
-
-        private void accelerometerBtn_Click(object sender, RoutedEventArgs e)
-        {
-            // If the accelerometer is null, it is initialized and started
-            if (accelerometer == null)
-            {
-                // Instantiate the accelerometer sensor object
-                accelerometer = Accelerometer.GetDefault();
-
-                // Add an event handler for the ReadingChanged event.
-                accelerometer.ReadingChanged += new TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>(accelerometer_ReadingChanged);
-
-                // The Start method could throw and exception, so use a try block
-                accelerometerBtn.Background = new SolidColorBrush(Colors.Green);
-                accelerometerBtn.Content = "OFF";
-            }
-            else
-            {
-                // if the accelerometer is not null, call Stop
-                accelerometer = null;
-                accelerometerBtn.Background = new SolidColorBrush(Colors.Red);
-                accelerometerBtn.Content = "ON";
             }
         }
 
         async void accelerometer_ReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
-            if (accelerometer != null)
+            if (connected && mode == SensorMode.JOYSTICK)
             {
-                if (connected)
-                {
-                    //byte[] bx = BitConverter.GetBytes(e.Reading.AccelerationX);
-                    byte[] by = BitConverter.GetBytes(-e.Reading.AccelerationY * 0.5 + 0.5);
-                    byte[] bz = BitConverter.GetBytes(e.Reading.AccelerationZ + 1);
+                //byte[] bx = BitConverter.GetBytes(e.Reading.AccelerationX);
+                byte[] by = BitConverter.GetBytes(-e.Reading.AccelerationY * 0.5 + 0.5);
+                byte[] bz = BitConverter.GetBytes(-e.Reading.AccelerationX+0.5);
 
-                    byte[] buff = new byte[AxisMsgSize];
-                    by.CopyTo(buff, 1);
-                    bz.CopyTo(buff, 9);
-                    buff[0] = 255;
-                    buff[AxisMsgSize - 1] = 0;
-                    try
-                    {
-                        await axisSocket.OutputStream.WriteAsync(buff.AsBuffer());
-                    }
-                    catch
-                    {
-                        onLoseConnect();
-                    }
-                    
+                byte[] buff = new byte[AxisMsgSize];
+                by.CopyTo(buff, 1);
+                bz.CopyTo(buff, 9);
+                buff[0] = 255;
+                buff[AxisMsgSize - 1] = 0;
+                try
+                {
+                    await axisSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
+                }
+
+            }
+        }
+
+        async void inclinometer_ReadingChanged(object sender, InclinometerReadingChangedEventArgs e)
+        {
+            InclinometerReading reading = e.Reading;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                switch (reading.YawAccuracy)
+                {
+                    case MagnetometerAccuracy.Unknown:
+                        sensorStateTextBlock.Text = "Unknown";
+                        break;
+                    case MagnetometerAccuracy.Unreliable:
+                        sensorStateTextBlock.Text = "Unreliable";
+                        break;
+                    case MagnetometerAccuracy.Approximate:
+                        sensorStateTextBlock.Text = "Approximate";
+                        break;
+                    case MagnetometerAccuracy.High:
+                        sensorStateTextBlock.Text = "High";
+                        break;
+                    default:
+                        sensorStateTextBlock.Text = "No data";
+                        break;
+                }
+            });
+
+            if (connected && mode == SensorMode.TRACKER)
+            {
+
+                double pitch = reading.PitchDegrees;
+                if (pitch < -90)
+                    pitch = -pitch - 180;
+                else if (pitch > 90)
+                    pitch = 180 - pitch;
+
+                byte[] rx = BitConverter.GetBytes((double)-reading.YawDegrees);
+                byte[] ry = BitConverter.GetBytes((double)-reading.RollDegrees);
+                byte[] rz = BitConverter.GetBytes((double)-reading.PitchDegrees);
+                byte[] buff = new byte[trackMsgSize];
+                rx.CopyTo(buff, 24);
+                ry.CopyTo(buff, 32);
+                rz.CopyTo(buff, 40);
+                try
+                {
+                    await trackSocket.OutputStream.WriteAsync(buff.AsBuffer());
+                }
+                catch
+                {
+                    onLoseConnect();
                 }
             }
         }
@@ -401,7 +450,7 @@ namespace YokeEmulator
                 byte[] buff = new byte[CtlMsgSize];
                 buff[0] = 255;
                 buff[1] = (byte)'b';
-                buff[2] = (byte)(btn+1);
+                buff[2] = (byte)(btn + 1);
                 if (isToggle[btn] == 1)
                 {
                     buff[3] = 0;
@@ -419,10 +468,10 @@ namespace YokeEmulator
                     buff[3] = 1;
                     _item.Background = new SolidColorBrush(Colors.OrangeRed);
                 }
-                    
+
                 buff[CtlMsgSize - 1] = 0;
                 try
-                { 
+                {
                     await ctlSocket.OutputStream.WriteAsync(buff.AsBuffer());
                 }
                 catch
@@ -444,7 +493,7 @@ namespace YokeEmulator
                 byte[] buff = new byte[CtlMsgSize];
                 buff[0] = 255;
                 buff[1] = (byte)'b';
-                buff[2] = (byte)(btn+1);
+                buff[2] = (byte)(btn + 1);
                 buff[3] = 0;
                 buff[CtlMsgSize - 1] = 0;
                 try
@@ -459,18 +508,29 @@ namespace YokeEmulator
             }
             pressedBtn = -1;
         }
-        private async void onLoseConnect()
+        private void onLoseConnect()
         {
             connectBtn.Background = new SolidColorBrush(Colors.Red);
             connectBtn.Content = "LOSE";
             connected = false;
             axisSocket.Dispose();
             ctlSocket.Dispose();
+
+            //reconnected;
+            connectBtn_Click(connectBtn, new RoutedEventArgs());
         }
 
-        private void trackBtn_PointerEntered(object sender, PointerRoutedEventArgs e)
+        private void ModeSwitcher_Click(object sender, PointerRoutedEventArgs e)
         {
-            
+            int idxitem = sensorModeGridView.Items.IndexOf(sender);
+            if (idxitem == (int)mode)   //Mode not change
+                return;
+            GridViewItem oldItem = sensorModeGridView.Items[(int)mode] as GridViewItem;
+            GridViewItem newItem = sensorModeGridView.Items[idxitem] as GridViewItem;
+            Brush oldBrush = oldItem.Background;
+            oldItem.Background = newItem.Background;
+            newItem.Background = oldBrush;
+            mode = (SensorMode)idxitem;
         }
     }
 }

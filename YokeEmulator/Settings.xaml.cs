@@ -113,6 +113,11 @@ namespace YokeEmulator
             else
                 btnCountTextBox.Text = "0";
 
+            if (localSettings.Values.ContainsKey("TRACKPORT"))
+                trackPortTextBox.Text = localSettings.Values["TRACKPORT"].ToString();
+            else
+                trackPortTextBox.Text = "4242";
+
             try
             {
                 btnCount = int.Parse(btnCountTextBox.Text);
@@ -164,6 +169,7 @@ namespace YokeEmulator
                 btnCount = 0;
             }
             localSettings.Values["BTNCOUNT"] = btnCountTextBox.Text;
+            localSettings.Values["TRACKPORT"] = trackPortTextBox.Text;
 
             int count = editStack.Children.Count;
             for (int i = 0; i < count; ++i)

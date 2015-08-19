@@ -21,19 +21,19 @@
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
         <Button x:Name="connectBtn" Content="Connect" HorizontalAlignment="Left" VerticalAlignment="Top" Height="31" Width="70" Click="connectBtn_Click"/>
-        <Slider x:Name="throttleSlider" HorizontalAlignment="Left" Margin="175.167,47,0,0" VerticalAlignment="Top" Width="41" Orientation="Vertical" Height="191" ManipulationMode="None" ValueChanged="throttleSlider_ValueChanged" Grid.Column="1"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="161.979,14,0,0" TextWrapping="Wrap" Text="Throttle" VerticalAlignment="Top" Height="28" Width="71" FontSize="18.667" Grid.Column="1"/>
-        <Button x:Name="accelerometerBtn" Content="ON" Margin="0,38,0,304" Height="20" Width="20" Background="Red" Click="accelerometerBtn_Click"/>
-        <TextBlock x:Name="msgTextBlock" HorizontalAlignment="Left" Margin="42,260,0,0" TextWrapping="Wrap" Text="MSGBOX" VerticalAlignment="Top" Height="23" Width="99" FontSize="16"/>
-        <Canvas x:Name="povCtl" HorizontalAlignment="Left" Height="136" Margin="10,102,0,0" VerticalAlignment="Top" Width="131" PointerMoved="povCtl_PointerMoved" PointerPressed="povCtl_PointerPressed" PointerReleased="povCtl_PointerReleased"/>
-        <ScrollViewer HorizontalAlignment="Left" Margin="189,14,0,10" Width="270" BorderBrush="White" BorderThickness="1" Grid.ColumnSpan="2">
+        <Slider x:Name="throttleSlider" HorizontalAlignment="Left" Margin="197.167,14,0,73" Width="34" Orientation="Vertical" ManipulationMode="None" ValueChanged="throttleSlider_ValueChanged" Grid.Column="1" RenderTransformOrigin="1,1" TickFrequency="20" TickPlacement="Outside" BorderBrush="White"/>
+        <TextBlock x:Name="sensorStateTextBlock" HorizontalAlignment="Left" Margin="10,224,0,0" TextWrapping="Wrap" Text="State" VerticalAlignment="Top" Height="23" Width="99" FontSize="16"/>
+        <Canvas x:Name="povCtl" HorizontalAlignment="Left" Height="136" Margin="10,70,0,0" VerticalAlignment="Top" Width="131" PointerMoved="povCtl_PointerMoved" PointerPressed="povCtl_PointerPressed" PointerReleased="povCtl_PointerReleased"/>
+        <ScrollViewer HorizontalAlignment="Left" Margin="192,14,0,73" Width="270" BorderBrush="White" BorderThickness="1" Grid.ColumnSpan="2">
             <GridView x:Name="buttonsGridView" HorizontalAlignment="Left"/>
         </ScrollViewer>
-        <AppBarButton x:Name="trackBtn" Grid.Column="1" HorizontalAlignment="Left" Label="TRACK" Margin="162.167,296,0,0" VerticalAlignment="Top" PointerEntered="trackBtn_PointerEntered">
-            <AppBarButton.Icon>
-                <SymbolIcon/>
-            </AppBarButton.Icon>
-        </AppBarButton>
-        <Slider x:Name="rudderSlider" HorizontalAlignment="Left" Margin="10,337,0,0" VerticalAlignment="Top" Width="164" Height="53" Value="50" Foreground="{x:Null}" ValueChanged="rudderSlider_ValueChanged" PointerExited="rudderSlider_PointerExited"/>
+        
+        
+        <GridView x:Name="sensorModeGridView" HorizontalAlignment="Left" Margin="10,252,0,0" VerticalAlignment="Top">
+            <GridViewItem Width="53" Background="HotPink" Content="None" PointerEntered="ModeSwitcher_Click" BorderBrush="White" BorderThickness="1"/>
+            <GridViewItem Content="JoyStick" PointerEntered="ModeSwitcher_Click" BorderBrush="White" BorderThickness="1"/>
+            <GridViewItem Content="Tracker" PointerEntered="ModeSwitcher_Click" BorderBrush="White" BorderThickness="1"/>
+        </GridView>
+        <Slider Grid.ColumnSpan="2" Margin="10,345,9.667,10" x:Name="rudderSlider" Value="50"  ValueChanged="rudderSlider_ValueChanged" PointerExited="rudderSlider_PointerExited"  TickFrequency="10" TickPlacement="Inline" Background="Red"/>
     </Grid>
 </Page>

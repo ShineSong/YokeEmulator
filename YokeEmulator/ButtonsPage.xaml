@@ -1,0 +1,26 @@
+﻿<Page
+    x:Class="YokeEmulator.ButtonsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YokeEmulator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton>
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="Main" FontSize="15"/>
+                </AppBarButton.Icon>
+                <AppBarButton x:Name="appBarButton" Height="100" Icon="Accept" Label="appbarbutton" Width="100" Click="appBarButton_Click"/>
+            </AppBarButton>
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Grid>
+        <ScrollViewer BorderBrush="White" BorderThickness="1" Grid.ColumnSpan="2">
+            <GridView x:Name="buttonsGridView" HorizontalAlignment="Left"/>
+        </ScrollViewer>
+    </Grid>
+</Page>
