@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="YokeEmulator.FlyPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YokeEmulator"
+    xmlns:YokeCtl="using:YokeCtl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Background>
+        <ImageBrush ImageSource="../Assets/flypagebackground.jpg" Stretch="Fill"/>
+    </Page.Background>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Image Source="Assets/yoke_logo_w.png" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,5" Width="150"/>
+        <YokeCtl:YESlider x:Name="throttleSlider" Grid.Row="2" Grid.Column="1" Background="Transparent" Foreground="White" StrockThickness="5" Value="0" ThumbSize="50" FontSize="15" ValueChanged="throttleSlider_ValueChanged" />
+        <!--<Slider x:Name="throttleSlider"    Style="{StaticResource YESlider}" Width="25" ValueChanged="throttleSlider_ValueChanged"/>-->
+        <TextBlock x:Name="MsgBox" Grid.Row="3" Grid.Column="1" FontSize="12"  Height="30" TextAlignment="Center"/>
+        <TextBlock x:Name="MagnetStateBox" Grid.Row="3" Grid.Column="0"  FontSize="12"  Height="30" TextAlignment="Right"/>
+        <YokeCtl:CurvePanel x:Name="LeftBar" Grid.Row="1" Grid.Column="0" StrokeThickness="5" ItemHeight="40" FlowDirection="LeftToRight" >
+            <Image x:Name="optButton" DataContext="0.5" Source="Assets/opt.png" Opacity="0.7" Tapped="optButton_Tapped"/>
+            <Image x:Name="conButton" DataContext="0.7" Source="Assets/zoom.png" Opacity="0.7" DoubleTapped="conButton_DoubleTapped" />
+        </YokeCtl:CurvePanel>
+        <YokeCtl:RudderPad Grid.Row="2" Grid.Column="0" Stroke="#7FFFFFFF" StrokeThickness="5" Resilience="False" Value="50" Width="210" Foreground="#FF98F9F0" ValueChanged="rudderPad_ValueChanged" TrackerBtnPressed="RudderPad_TrackerBtnPressed" TrackerBtnReleased="RudderPad_TrackerBtnReleased"/>
+        <YokeCtl:FlyButtonsPanel x:Name="flyButtonsPanel" Grid.Row="2" Grid.Column="2" Stroke="#7FFFFFFF" StrokeThickness="5" Width="210" Foreground="#FF98F9F0" ButtonsPressed="flyButtons_Pressed" ButtonsReleased="flyButtons_Released" TrackerBtnPressed="FlyButtonsPanel_TrackerBtnPressed" TrackerBtnReleased="FlyButtonsPanel_TrackerBtnReleased"/>
+        
+        <YokeCtl:CurvePanel x:Name="RightBar" Grid.Row="1" Grid.Column="2" StrokeThickness="5" ItemHeight="40" FlowDirection="RightToLeft" >
+            <Image DataContext="0.7" Source="Assets/thr.png" Opacity="0.7"/>
+        </YokeCtl:CurvePanel>
+    </Grid>
+</Page>

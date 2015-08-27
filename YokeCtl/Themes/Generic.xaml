@@ -1,0 +1,105 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YokeCtl">
+
+    <Style TargetType="local:YESlider" >
+        <Setter Property="ThumbSize" Value="20"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:YESlider">
+                    <Canvas x:Name="PART_Canvas">
+                        <Line x:Name="PART_Line1" Stroke="{TemplateBinding Foreground}"/>
+                        <Ellipse x:Name="PART_Thumb" Width="{TemplateBinding ThumbSize}" Height="{TemplateBinding ThumbSize}" Stroke="{TemplateBinding Foreground}" Fill="Transparent"/>
+                        <Grid x:Name="PART_Readingbox">
+                            <TextBlock x:Name="PART_Reading" Width="{TemplateBinding ThumbSize}" Height="{TemplateBinding ThumbSize}" FontSize="{TemplateBinding FontSize}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        </Grid>
+                        <Line x:Name="PART_Line2" Stroke="{TemplateBinding Foreground}"/>
+                    </Canvas>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:RudderPad" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:RudderPad">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Canvas x:Name="PART_Canvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Path x:Name="PART_RoundTriangle" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}" Fill="#4CFFFFFF" />
+                            <Canvas x:Name="PART_VerticalTick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False" />
+                            <Canvas x:Name="PART_ArcTick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False" />
+                            <Ellipse x:Name="PART_rudderBtn" Fill="{TemplateBinding Foreground}" Opacity="0.8"/>
+                            <Ellipse x:Name="PART_trackerBtn" Fill="Pink" Opacity="0.5" />
+                        </Canvas>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:FlyButtonsPanel" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:FlyButtonsPanel">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Canvas x:Name="PART_Canvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Path x:Name="PART_RoundTriangle" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}" Fill="#4CFFFFFF" />
+                            <Ellipse x:Name="PART_trackerBtn" Fill="Pink" Opacity="0.5" />
+
+                            <Grid x:Name="PART_btnGrid1">
+                                <Ellipse x:Name="PART_btn1" Fill="#FF00DCFF" Opacity="0.5"/>
+                                <Viewbox x:Name="PART_viewbox1" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn1Text" Margin="5"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="PART_btnGrid2">
+                                <Ellipse x:Name="PART_btn2" Fill="#FF00DCFF" Opacity="0.5"/>
+                                <Viewbox x:Name="PART_viewbox2" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn2Text" Margin="5"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="PART_btnGrid3">
+                                <Ellipse x:Name="PART_btn3" Fill="#FF00DCFF" Opacity="0.5"/>
+                                <Viewbox x:Name="PART_viewbox3" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn3Text" Margin="5"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="PART_btnGrid4">
+                                <Ellipse x:Name="PART_btn4" Fill="#FF00DCFF" Opacity="0.5"/>
+                                <Viewbox x:Name="PART_viewbox4" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn4Text" Margin="5"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="PART_btnGrid5">
+                                <Ellipse x:Name="PART_btn5" Fill="#FF00DCFF" Opacity="0.5"/>
+                                <Viewbox x:Name="PART_viewbox5" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn5Text" Margin="5"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="PART_btnGrid6" >
+                                <Ellipse x:Name="PART_btn6" Fill="#FF00DCFF" Opacity="0.5"/>
+                                <Viewbox x:Name="PART_viewbox6" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn6Text" Margin="5"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="PART_btnGrid7" >
+                                <Ellipse x:Name="PART_btn7" Fill="#FF00DCFF" Opacity="0.5"/>
+                                <Viewbox x:Name="PART_viewbox7" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn7Text" Margin="5"/>
+                                </Viewbox>
+                            </Grid>
+                        </Canvas>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

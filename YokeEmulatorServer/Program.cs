@@ -27,8 +27,18 @@ namespace YokeEmulatorServer
         static bool isPovCon = false;
         static void Main(string[] args)
         {
-            joystick = new vJoy();
-            iReport = new vJoy.JoystickState();
+            try
+            {
+                joystick = new vJoy();
+                iReport = new vJoy.JoystickState();
+            }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("vJoy error,please reinstall vjoy.");
+                return;
+            }
+            
             if (!joystick.vJoyEnabled())
             {
                 Console.ForegroundColor = ConsoleColor.Red;
