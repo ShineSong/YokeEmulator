@@ -28,6 +28,8 @@ namespace YokeEmulator
         private TransitionCollection transitions;
         public static Communication comHelper = new Communication();
         public static ActionHelper actionHelper = new ActionHelper();
+        public static double rudderValue=0;
+        public static double throttleValue=0;
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。

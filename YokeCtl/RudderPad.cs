@@ -189,7 +189,7 @@ namespace YokeCtl
             double old = Value;
             if (angle < 0) Value = 0; else if (angle > 100) Value = 100; else Value = angle;
             if (ValueChanged != null)
-                ValueChanged(this, new SliderValueChangedEventArgs(old, Value, this));
+                ValueChanged(this, new SliderValueChangedEventArgs(Value, old, this));
             _rudderBtn.Opacity = 1;
         }
         protected override void OnPointerMoved(PointerRoutedEventArgs e)
@@ -203,7 +203,7 @@ namespace YokeCtl
             double old = Value;
             if (angle < 0) Value = 0; else if (angle > 100) Value = 100; else Value = angle;
             if (ValueChanged != null)
-                ValueChanged(this, new SliderValueChangedEventArgs(old, Value, this));
+                ValueChanged(this, new SliderValueChangedEventArgs(Value, old, this));
         }
         protected override void OnPointerReleased(PointerRoutedEventArgs e)
         {
@@ -214,7 +214,7 @@ namespace YokeCtl
                 double old = Value;
                 Value = 50;
                 if (ValueChanged != null)
-                    ValueChanged(this, new SliderValueChangedEventArgs(old, Value, this));
+                    ValueChanged(this, new SliderValueChangedEventArgs(Value, old, this));
             }
             _rudderBtn.Opacity = 0.7;
         }

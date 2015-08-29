@@ -3,28 +3,40 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Configuration;
 using vJoyInterfaceWrap;
+
 namespace YokeEmulatorServer
 {
+    public class UdpState
+    {
+        public UdpClient udpClient;
+        public IPEndPoint ipEndPoint;
+    }
     class Program
     {
+        const string version = "1.0.0.0";
         static public vJoy joystick;
         static public vJoy.JoystickState iReport;
         static public uint id = 1;
 
         static long axisMaxval;
-        static byte[] axisBuffer = new byte[AxisMsgSize];
-        const int AxisPort = 23333;
-        const int AxisMsgSize = 18;
 
-        static byte[] ctlBuffer = new byte[CtlMsgSize];
+        static byte[] AxisBuffer = new byte[AxisUDPMsgSize];
+        const int AxisPort = 23333;
+        const int AxisUDPMsgSize = 16;
+
+        static byte[] CtlBuffer = new byte[CtlUDPMsgSize];
         const int CtlPort = 23334;
-        const int CtlMsgSize = 11;
+        const int CtlUDPMsgSize = 9;
+
         static bool isPovCon = false;
+
         static void Main(string[] args)
         {
             try
@@ -38,15 +50,13 @@ namespace YokeEmulatorServer
                 Console.WriteLine("vJoy error,please reinstall vjoy.");
                 return;
             }
-            
+
             if (!joystick.vJoyEnabled())
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("vJoy driver not enabled: Failed Getting vJoy attributes.\n");
                 return;
             }
-            else
-                Console.WriteLine("Vendor: {0}\nProduct :{1}\nVersion Number:{2}\n", joystick.GetvJoyManufacturerString(), joystick.GetvJoyProductString(), joystick.GetvJoySerialNumberString());
             // Get the state of the requested device
             VjdStat status = joystick.GetVJDStatus(id);
             switch (status)
@@ -75,32 +85,38 @@ namespace YokeEmulatorServer
             bool AxisY = joystick.GetVJDAxisExist(id, HID_USAGES.HID_USAGE_Y);
             bool AxisZ = joystick.GetVJDAxisExist(id, HID_USAGES.HID_USAGE_Z);
             bool AxisRX = joystick.GetVJDAxisExist(id, HID_USAGES.HID_USAGE_RX);
+            bool AxisRY = joystick.GetVJDAxisExist(id, HID_USAGES.HID_USAGE_RX);
             bool AxisRZ = joystick.GetVJDAxisExist(id, HID_USAGES.HID_USAGE_RZ);
+            bool AxisSL0 = joystick.GetVJDAxisExist(id, HID_USAGES.HID_USAGE_SL0);
+            bool AxisSL1 = joystick.GetVJDAxisExist(id, HID_USAGES.HID_USAGE_SL1);
             // Get the number of buttons and POV Hat switchessupported by this vJoy device
             int nButtons = joystick.GetVJDButtonNumber(id);
             int ContPovNumber = joystick.GetVJDContPovNumber(id);
             int DiscPovNumber = joystick.GetVJDDiscPovNumber(id);
 
             // Print results
-            Console.WriteLine("\nvJoy Device {0} capabilities:\n", id);
-            Console.WriteLine("Numner of buttons\t\t{0}\n", nButtons);
-            Console.WriteLine("Numner of Continuous POVs\t{0}\n", ContPovNumber);
-            Console.WriteLine("Numner of Descrete POVs\t\t{0}\n", DiscPovNumber);
+            Console.WriteLine("vJoy Device {0}", id);
+            Console.WriteLine("Checking...Numner of buttons\t\t{0}\tPass", nButtons);
+            Console.WriteLine("Checking...Numner of Continuous POVs\t{0}\tPass", ContPovNumber);
+            Console.WriteLine("Checking...Numner of Descrete POVs\t{0}\tPass", DiscPovNumber);
             if (ContPovNumber > DiscPovNumber)
                 isPovCon = true;
-            Console.WriteLine("Axis X\t\t{0}\n", AxisX ? "Yes" : "No");
-            Console.WriteLine("Axis Y\t\t{0}\n", AxisX ? "Yes" : "No");
-            Console.WriteLine("Axis Z\t\t{0}\n", AxisX ? "Yes" : "No");
-            Console.WriteLine("Axis Rx\t\t{0}\n", AxisRX ? "Yes" : "No");
-            Console.WriteLine("Axis Rz\t\t{0}\n", AxisRZ ? "Yes" : "No");
-
+            Console.WriteLine("Checking...Axis X\t\t\t{0}\tPass", AxisX ? "Yes" : "No");
+            Console.WriteLine("Checking...Axis Y\t\t\t{0}\tPass", AxisX ? "Yes" : "No");
+            Console.WriteLine("Checking...Axis Z\t\t\t{0}\tPass", AxisX ? "Yes" : "No");
+            Console.WriteLine("Checking...Axis Rx\t\t\t{0}\tPass", AxisRX ? "Yes" : "No");
+            Console.WriteLine("Checking...Axis Ry\t\t\t{0}\tPass", AxisRY ? "Yes" : "No");
+            Console.WriteLine("Checking...Axis Rz\t\t\t{0}\tPass", AxisRZ ? "Yes" : "No");
+            Console.WriteLine("Checking...Axis SL0\t\t\t{0}\tPass", AxisSL0 ? "Yes" : "No");
+            Console.WriteLine("Checking...Axis SL1\t\t\t{0}\tPass", AxisSL1 ? "Yes" : "No");
+                                                           
             // Test if DLL matches the driver
             UInt32 DllVer = 0, DrvVer = 0;
             bool match = joystick.DriverMatch(ref DllVer, ref DrvVer);
             if (match)
-                Console.WriteLine("Version of Driver Matches DLL Version ({0:X})\n", DllVer);
+                Console.WriteLine("Checking...Version of Driver Matches DLL Version ({0:X})\n", DllVer);
             else
-                Console.WriteLine("Version of Driver ({0:X}) does NOT match DLL Version ({1:X})\n", DrvVer, DllVer);
+                Console.WriteLine("Checking...Version of Driver ({0:X}) does NOT match DLL Version ({1:X})\n", DrvVer, DllVer);
 
             // Acquire the target
             if ((status == VjdStat.VJD_STAT_OWN) || ((status == VjdStat.VJD_STAT_FREE) && (!joystick.AcquireVJD(id))))
@@ -112,32 +128,44 @@ namespace YokeEmulatorServer
             else
                 Console.WriteLine("Acquired: vJoy device number {0}.\n", id);
 
+            joystick.ResetAll();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("ALL GREEN.");
+            Console.WriteLine("System All Green.Now Start...");
             Console.ForegroundColor = ConsoleColor.White;
+
+            readConfig();
+            printHello();
 
             joystick.GetVJDAxisMax(id, HID_USAGES.HID_USAGE_X, ref axisMaxval);
 
 
+            UdpState axisUdpState = new UdpState();
+            axisUdpState.ipEndPoint = new IPEndPoint(IPAddress.Any, AxisPort);
+            axisUdpState.udpClient = new UdpClient(AxisPort);
+            axisUdpState.udpClient.BeginReceive(AxisUDPRecieved, axisUdpState);
+
+            UdpState ctlUdpState = new UdpState();
+            ctlUdpState.ipEndPoint = new IPEndPoint(IPAddress.Any, CtlPort);
+            ctlUdpState.udpClient = new UdpClient(CtlPort);
+            ctlUdpState.udpClient.BeginReceive(CtlUDPRecieved, ctlUdpState);
+
             try
             {
-                TcpListener axisTcp;
-                axisTcp = new TcpListener(IPAddress.Any, AxisPort);
-                axisTcp.Start(1);
-                axisTcp.BeginAcceptSocket(axisClientConnect, axisTcp);
-
-                TcpListener ctlTcp;
-                ctlTcp = new TcpListener(IPAddress.Any, CtlPort);
-                ctlTcp.Start(1);
-                ctlTcp.BeginAcceptSocket(ctlClientConnect, ctlTcp);
-                Console.WriteLine("started listening...");
-
-                IPAddress[] arrIPAddresses = Dns.GetHostAddresses(Dns.GetHostName());
-                foreach (IPAddress ip in arrIPAddresses)
+                NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+                foreach (NetworkInterface adapter in nics)
                 {
-                    if (ip.AddressFamily.Equals(AddressFamily.InterNetwork))
+                    if (adapter.OperationalStatus != OperationalStatus.Up) //filter unavaliable interface
+                        continue;
+                    if (adapter.NetworkInterfaceType == NetworkInterfaceType.Ethernet | adapter.NetworkInterfaceType == NetworkInterfaceType.Wireless80211)
                     {
-                        Console.WriteLine(ip.ToString());
+                        IPInterfaceProperties ip = adapter.GetIPProperties();
+                        UnicastIPAddressInformationCollection ipCollection = ip.UnicastAddresses;
+                        foreach (UnicastIPAddressInformation ipadd in ipCollection)
+                        {
+                            if (ipadd.Address.AddressFamily == AddressFamily.InterNetwork)
+                                //判断是否为ipv4
+                                Console.WriteLine(adapter.Name + " : " + ipadd.Address.ToString());//获取ip
+                        }
                     }
                 }
             }
@@ -152,126 +180,86 @@ namespace YokeEmulatorServer
 
             while (true) Thread.Sleep(1000000);
         }
-
-        static void axisClientConnect(IAsyncResult ar)
+        static void printHello()
         {
-            TcpListener ServerSocket = (TcpListener)ar.AsyncState;
-            Socket ClientSocket = ServerSocket.EndAcceptSocket(ar);
-            Console.WriteLine("Axis Channel Client Connected.");
-            joystick.ResetVJD(id);
-
-            ClientSocket.BeginReceive(axisBuffer, 0, AxisMsgSize, SocketFlags.None, new AsyncCallback(axisRead), ClientSocket);
-            ServerSocket.BeginAcceptSocket(new AsyncCallback(axisClientConnect), ServerSocket);
+            Console.WriteLine("============ YokeEmulator {0} ============", version);
+            Console.WriteLine("Start Listenning on {0} for Axis Channel and {1} for Command Channel\n",AxisPort,CtlPort);
         }
 
-        static void ctlClientConnect(IAsyncResult ar)
+        static void readConfig()
         {
-            TcpListener ServerSocket = (TcpListener)ar.AsyncState;
-            Socket ClientSocket = ServerSocket.EndAcceptSocket(ar);
-            Console.WriteLine("Ctrl Channel Client Connected.");
-            joystick.ResetVJD(id);
-
-            ClientSocket.BeginReceive(ctlBuffer, 0, CtlMsgSize, SocketFlags.None, new AsyncCallback(ctlRead), ClientSocket);
-            ServerSocket.BeginAcceptSocket(new AsyncCallback(ctlClientConnect), ServerSocket);
+            ConfigurationFileMap fileMap = new ConfigurationFileMap(System.Environment.CurrentDirectory + "\\Emulator.config");
+            Configuration a = ConfigurationManager.OpenMappedMachineConfiguration(fileMap);
         }
 
-        static void axisRead(IAsyncResult ar)
+        static void AxisUDPRecieved(IAsyncResult ar)
         {
-            Socket SocketClient = (Socket)ar.AsyncState;
-            int ByteRead = 0;
-            try
+            UdpState state = (UdpState)ar.AsyncState;
+            AxisBuffer = state.udpClient.EndReceive(ar, ref state.ipEndPoint);
+            if (AxisBuffer.Length != AxisUDPMsgSize)
             {
-                ByteRead = SocketClient.EndReceive(ar);
+                Console.WriteLine("AXIS ERR "+ AxisBuffer.Length.ToString());
+                Console.WriteLine(state.ipEndPoint.Port);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine("Axis Channel Disconnect.");
-                return;
-            }
-            if (ByteRead == 0)
-            {
-                Console.WriteLine("Axis Channel Disconnect.");
-                return;
-            }
-            else if (ByteRead < AxisMsgSize)
-            {
-                Console.WriteLine("Axis Channel Error Connect.");
-                Console.Beep();
-                return;
-            }
-
-            byte veri1 = axisBuffer[0];
-            byte veri2 = axisBuffer[AxisMsgSize - 1];
-
-            if (veri1 != 255 || veri2 != 0)
-            {
-                Console.WriteLine("Axis Channel Verify Error.");
-                Console.Beep();
-                return;
-            }
-
-            double x = BitConverter.ToDouble(axisBuffer, 1) * axisMaxval;
-            double y = BitConverter.ToDouble(axisBuffer, 9) * axisMaxval;
-            if (x < 0) x = 0; else if (x > axisMaxval) x = axisMaxval;
-            if (y < 0) y = 0; else if (y > axisMaxval) y = axisMaxval;
-            joystick.SetAxis((int)x, id, HID_USAGES.HID_USAGE_X);
-            joystick.SetAxis((int)y, id, HID_USAGES.HID_USAGE_Y);
-
-            SocketClient.BeginReceive(axisBuffer, 0, AxisMsgSize, SocketFlags.None, new AsyncCallback(axisRead), SocketClient);
+            double rawx = BitConverter.ToDouble(AxisBuffer, 0);
+            double rawy = BitConverter.ToDouble(AxisBuffer, 8);
+            joystick.SetAxis((int)(rawx * axisMaxval), id, HID_USAGES.HID_USAGE_X);
+            joystick.SetAxis((int)(rawy * axisMaxval), id, HID_USAGES.HID_USAGE_Y);
+            state.udpClient.BeginReceive(AxisUDPRecieved, state);
         }
-
-        static void ctlRead(IAsyncResult ar)
+        static void CtlUDPRecieved(IAsyncResult ar)
         {
-            Socket SocketClient = (Socket)ar.AsyncState;
-            int ByteRead = 0;
-            try
+            UdpState state = (UdpState)ar.AsyncState;
+            CtlBuffer = state.udpClient.EndReceive(ar, ref state.ipEndPoint);
+            if (CtlBuffer.Length != CtlUDPMsgSize)
             {
-                ByteRead = SocketClient.EndReceive(ar);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Ctrl Channel Disconnect.");
-                return;
-            }
-            if (ByteRead == 0)
-            {
-                Console.WriteLine("Ctrl Channel Disconnect.");
-                return;
-            }
-            else if (ByteRead < CtlMsgSize)
-            {
-                Console.WriteLine("Ctrl Channel Error Connect.");
-                Console.Beep();
-                return;
+                Console.WriteLine("CTL ERR " + CtlBuffer.Length.ToString());
             }
 
-            byte veri1 = ctlBuffer[0];
-            byte veri2 = ctlBuffer[CtlMsgSize - 1];
-
-            if (veri1 != 255 || veri2 != 0)
-            {
-                Console.WriteLine("Ctrl Channel Verify Error.");
-                Console.Beep();
-                return;
-            }
-            byte command = ctlBuffer[1];
+            byte command = CtlBuffer[0];
+            double val;
+            byte bid, bstate;
             switch (command)
             {
-                case (byte)'t':
-                    double throttle = BitConverter.ToDouble(ctlBuffer, 2);
-                    joystick.SetAxis((int)(throttle * axisMaxval), id, HID_USAGES.HID_USAGE_SL0);
+                case (byte)'s':
+                    val = BitConverter.ToDouble(CtlBuffer, 1);
+                    joystick.SetAxis((int)(val * axisMaxval), id, HID_USAGES.HID_USAGE_SL0);
                     break;
-                case (byte)'r':
-                    double rudder = BitConverter.ToDouble(ctlBuffer, 2);
-                    joystick.SetAxis((int)(rudder * axisMaxval), id, HID_USAGES.HID_USAGE_Z);
+                case (byte)'l':
+                    val = BitConverter.ToDouble(CtlBuffer, 1);
+                    joystick.SetAxis((int)(val * axisMaxval), id, HID_USAGES.HID_USAGE_SL1);
+                    break;
+                case (byte)'x':
+                    val = BitConverter.ToDouble(CtlBuffer, 1);
+                    joystick.SetAxis((int)(val * axisMaxval), id, HID_USAGES.HID_USAGE_X);
+                    break;
+                case (byte)'y':
+                    val = BitConverter.ToDouble(CtlBuffer, 1);
+                    joystick.SetAxis((int)(val * axisMaxval), id, HID_USAGES.HID_USAGE_Y);
+                    break;
+                case (byte)'z':
+                    val = BitConverter.ToDouble(CtlBuffer, 1);
+                    joystick.SetAxis((int)(val * axisMaxval), id, HID_USAGES.HID_USAGE_Z);
+                    break;
+                case (byte)'X':
+                    val = BitConverter.ToDouble(CtlBuffer, 1);
+                    joystick.SetAxis((int)(val * axisMaxval), id, HID_USAGES.HID_USAGE_RX);
+                    break;
+                case (byte)'Y':
+                    val = BitConverter.ToDouble(CtlBuffer, 1);
+                    joystick.SetAxis((int)(val * axisMaxval), id, HID_USAGES.HID_USAGE_RY);
+                    break;
+                case (byte)'Z':
+                    val = BitConverter.ToDouble(CtlBuffer, 1);
+                    joystick.SetAxis((int)(val * axisMaxval), id, HID_USAGES.HID_USAGE_RZ);
                     break;
                 case (byte)'b':
-                    byte bid = ctlBuffer[2];
-                    byte state = ctlBuffer[3];
-                    joystick.SetBtn(state == 1, id, bid);
+                    bid = CtlBuffer[1];
+                    bstate = CtlBuffer[2];
+                    joystick.SetBtn(bstate == 1, id, bid);
                     break;
                 case (byte)'p':
-                    double pov = BitConverter.ToDouble(ctlBuffer, 2);
+                    double pov = BitConverter.ToDouble(CtlBuffer, 1);
                     if (pov > 0)
                         if (isPovCon)
                             joystick.SetContPov((int)pov * 100, id, 1);
@@ -292,10 +280,8 @@ namespace YokeEmulatorServer
                     Console.WriteLine("Ctrl command unknown.");
                     break;
             }
-
-            SocketClient.BeginReceive(ctlBuffer, 0, CtlMsgSize, SocketFlags.None, new AsyncCallback(ctlRead), SocketClient);
+            state.udpClient.BeginReceive(CtlUDPRecieved, state);
         }
     }
-
 }
 

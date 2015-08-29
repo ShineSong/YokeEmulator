@@ -67,8 +67,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>YokeEmulatorServer.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -85,6 +89,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Emulator.config" />
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
@@ -101,7 +106,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /r /y "$(ProjectDir)SDK\c#\x64\vJoyInterface.dll" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /r /y "$(ProjectDir)SDK\c#\x64\vJoyInterface.dll" "$(TargetDir)"
+xcopy /r /y "$(ProjectDir)Emulator.config" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

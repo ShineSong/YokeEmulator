@@ -51,22 +51,30 @@ namespace YokeEmulator
                     var displayRequest = new Windows.System.Display.DisplayRequest();
                     displayRequest.RequestActive();
                 }
-                else
-                    this.Frame.Navigate(typeof(Settings));
+            if (localSettings.Values.ContainsKey("RUDDERRESILIENCE"))
+                rudderPad.Resilience = (bool)localSettings.Values["RUDDERRESILIENCE"];
+
             if (localSettings.Values.ContainsKey("BTNLABEL1"))
                 flyButtonsPanel.Btn1Text = localSettings.Values["BTNLABEL1"].ToString();
             if (localSettings.Values.ContainsKey("BTNLABEL2"))
-                flyButtonsPanel.Btn1Text = localSettings.Values["BTNLABEL2"].ToString();
+                flyButtonsPanel.Btn2Text = localSettings.Values["BTNLABEL2"].ToString();
             if (localSettings.Values.ContainsKey("BTNLABEL3"))
-                flyButtonsPanel.Btn1Text = localSettings.Values["BTNLABEL3"].ToString();
+                flyButtonsPanel.Btn3Text = localSettings.Values["BTNLABEL3"].ToString();
             if (localSettings.Values.ContainsKey("BTNLABEL4"))
-                flyButtonsPanel.Btn1Text = localSettings.Values["BTNLABEL4"].ToString();
+                flyButtonsPanel.Btn4Text = localSettings.Values["BTNLABEL4"].ToString();
             if (localSettings.Values.ContainsKey("BTNLABEL5"))
-                flyButtonsPanel.Btn1Text = localSettings.Values["BTNLABEL5"].ToString();
+                flyButtonsPanel.Btn5Text = localSettings.Values["BTNLABEL5"].ToString();
             if (localSettings.Values.ContainsKey("BTNLABEL6"))
-                flyButtonsPanel.Btn1Text = localSettings.Values["BTNLABEL6"].ToString();
+                flyButtonsPanel.Btn6Text = localSettings.Values["BTNLABEL6"].ToString();
             if (localSettings.Values.ContainsKey("BTNLABEL7"))
-                flyButtonsPanel.Btn1Text = localSettings.Values["BTNLABEL7"].ToString();
+                flyButtonsPanel.Btn7Text = localSettings.Values["BTNLABEL7"].ToString();
+            rudderPad.Value = App.rudderValue;
+            throttleSlider.Value = App.throttleValue;
+        }
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            App.rudderValue = rudderPad.Value;
+            App.throttleValue = throttleSlider.Value;
         }
 
         private void throttleSlider_ValueChanged(object sender, SliderValueChangedEventArgs e)
@@ -108,7 +116,7 @@ namespace YokeEmulator
                     }
                     else
                     {
-                        this.Frame.Navigate(typeof(Settings));
+                        this.Frame.Navigate(typeof(SettingsPage));
                         return;
                     }
                     await App.actionHelper.connectTo(localSettings.Values["IPADDR"].ToString(), trackPort);
@@ -117,7 +125,7 @@ namespace YokeEmulator
                 }
                 else
                 {
-                    this.Frame.Navigate(typeof(Settings));
+                    this.Frame.Navigate(typeof(SettingsPage));
                 }
 
             }
@@ -147,6 +155,7 @@ namespace YokeEmulator
         private void FlyButtonsPanel_TrackerBtnReleased(object sender, EventArgs e)
         {
             rightTrackBtnPressed = false;
+            if(!leftTrackBtnPressed)
             App.actionHelper.mode = ActionHelper.SensorMode.JOYSTICK;
         }
 
@@ -160,11 +169,13 @@ namespace YokeEmulator
         private void RudderPad_TrackerBtnReleased(object sender, EventArgs e)
         {
             leftTrackBtnPressed = false;
-            App.actionHelper.mode = ActionHelper.SensorMode.JOYSTICK;
+            if(!rightTrackBtnPressed)
+                App.actionHelper.mode = ActionHelper.SensorMode.JOYSTICK;
         }
         private void ComHelper_ConnectLose()
         {
             MsgBox.Text = "Lose";
+            conButton.Opacity = 0.7;
         }
         private void ActionHelper_InclinometerStateChanged(object sender, EventArgs e)
         {
@@ -190,7 +201,7 @@ namespace YokeEmulator
 
         private void optButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Settings));
+            this.Frame.Navigate(typeof(SettingsPage));
         }
     }
 }

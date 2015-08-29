@@ -10,7 +10,6 @@ namespace YokeEmulator
 {
     public class ActionHelper
     {
-        Accelerometer accelerometer = null;
         Inclinometer inclinometer = null;
 
         public bool connected = false;
@@ -23,9 +22,14 @@ namespace YokeEmulator
         {
             inclinometer = Inclinometer.GetDefault();
             inclinometer.ReadingChanged += inclinometer_ReadingChanged;
-            accelerometer = Accelerometer.GetDefault();
-            accelerometer.ReadingChanged += accelerometer_ReadingChanged;
             InclinometerState = MagnetometerAccuracy.Unknown;
+
+            App.comHelper.ConnectLose += ComHelper_ConnectLose;
+        }
+
+        private void ComHelper_ConnectLose()
+        {
+            connected = false;
         }
 
         public async Task connectTo(string ipaddr, int trackPort)
@@ -53,20 +57,16 @@ namespace YokeEmulator
                 }
             }
         }
-
-        private void onLoseConnect()
-        {
-            throw new NotImplementedException();
-        }
+        
         public void OnSliderValueChanged(double value)
         {
             if (connected)
-                App.comHelper.sendCtl((byte)'t', value / 100.0);
+                App.comHelper.sendCtl((byte)'s', value / 100.0);
         }
         public void OnRudderValueChanged(double value)
         {
             if (connected)
-                App.comHelper.sendCtl((byte)'r', value / 100.0);
+                App.comHelper.sendCtl((byte)'z', value / 100.0);
         }
         public void OnButtonPressed(int bid)
         {
@@ -90,9 +90,11 @@ namespace YokeEmulator
                 if (InclinometerStateChanged != null)
                     InclinometerStateChanged(this, EventArgs.Empty);
             }
-            
+
             if (connected && mode == SensorMode.TRACKER)
                 App.comHelper.sendTrack(-reading.YawDegrees, -reading.RollDegrees, -reading.PitchDegrees);
+            else if (connected && mode == SensorMode.JOYSTICK)
+                App.comHelper.sendAxis(reading.PitchDegrees / 120 + 0.5, reading.RollDegrees / 100 + 0.5);
         }
 
         private void accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)

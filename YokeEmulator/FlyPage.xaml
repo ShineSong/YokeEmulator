@@ -24,14 +24,13 @@
         </Grid.ColumnDefinitions>
         <Image Source="Assets/yoke_logo_w.png" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,5" Width="150"/>
         <YokeCtl:YESlider x:Name="throttleSlider" Grid.Row="2" Grid.Column="1" Background="Transparent" Foreground="White" StrockThickness="5" Value="0" ThumbSize="50" FontSize="15" ValueChanged="throttleSlider_ValueChanged" />
-        <!--<Slider x:Name="throttleSlider"    Style="{StaticResource YESlider}" Width="25" ValueChanged="throttleSlider_ValueChanged"/>-->
         <TextBlock x:Name="MsgBox" Grid.Row="3" Grid.Column="1" FontSize="12"  Height="30" TextAlignment="Center"/>
         <TextBlock x:Name="MagnetStateBox" Grid.Row="3" Grid.Column="0"  FontSize="12"  Height="30" TextAlignment="Right"/>
         <YokeCtl:CurvePanel x:Name="LeftBar" Grid.Row="1" Grid.Column="0" StrokeThickness="5" ItemHeight="40" FlowDirection="LeftToRight" >
             <Image x:Name="optButton" DataContext="0.5" Source="Assets/opt.png" Opacity="0.7" Tapped="optButton_Tapped"/>
             <Image x:Name="conButton" DataContext="0.7" Source="Assets/zoom.png" Opacity="0.7" DoubleTapped="conButton_DoubleTapped" />
         </YokeCtl:CurvePanel>
-        <YokeCtl:RudderPad Grid.Row="2" Grid.Column="0" Stroke="#7FFFFFFF" StrokeThickness="5" Resilience="False" Value="50" Width="210" Foreground="#FF98F9F0" ValueChanged="rudderPad_ValueChanged" TrackerBtnPressed="RudderPad_TrackerBtnPressed" TrackerBtnReleased="RudderPad_TrackerBtnReleased"/>
+        <YokeCtl:RudderPad x:Name="rudderPad" Grid.Row="2" Grid.Column="0" Stroke="#7FFFFFFF" StrokeThickness="5" Resilience="False" Value="50" Width="210" Foreground="#FF98F9F0" ValueChanged="rudderPad_ValueChanged" TrackerBtnPressed="RudderPad_TrackerBtnPressed" TrackerBtnReleased="RudderPad_TrackerBtnReleased"/>
         <YokeCtl:FlyButtonsPanel x:Name="flyButtonsPanel" Grid.Row="2" Grid.Column="2" Stroke="#7FFFFFFF" StrokeThickness="5" Width="210" Foreground="#FF98F9F0" ButtonsPressed="flyButtons_Pressed" ButtonsReleased="flyButtons_Released" TrackerBtnPressed="FlyButtonsPanel_TrackerBtnPressed" TrackerBtnReleased="FlyButtonsPanel_TrackerBtnReleased"/>
         
         <YokeCtl:CurvePanel x:Name="RightBar" Grid.Row="1" Grid.Column="2" StrokeThickness="5" ItemHeight="40" FlowDirection="RightToLeft" >
