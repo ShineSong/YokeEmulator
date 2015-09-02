@@ -183,6 +183,7 @@ namespace YokeEmulatorServer
         static void printHello()
         {
             Console.WriteLine("============ YokeEmulator {0} ============", version);
+            Console.WriteLine("Copyright (C) 2015  SxS (shinesong_sxs@foxmail.com)");
             Console.WriteLine("Start Listenning on {0} for Axis Channel and {1} for Command Channel\n",AxisPort,CtlPort);
         }
 

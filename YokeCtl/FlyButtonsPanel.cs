@@ -101,6 +101,15 @@ namespace YokeCtl
         {
             this.DefaultStyleKey = typeof(FlyButtonsPanel);
         }
+
+        public bool[] DoubleTappedProperty
+        {
+            get { return dtapped; }
+            set {
+                dtapped = value;
+            }
+        }
+
         #region Stroke
         public static readonly DependencyProperty StrokeProperty =
             DependencyProperty.Register(
@@ -310,17 +319,16 @@ namespace YokeCtl
             btnGrids[4] = (Grid)GetTemplateChild(btnGrid5Name);
             btnGrids[5] = (Grid)GetTemplateChild(btnGrid6Name);
             btnGrids[6] = (Grid)GetTemplateChild(btnGrid7Name);
-            dtapped = new bool[7];
             _canvas.SizeChanged += OnSizeChanged;
             _trackerBtn.PointerPressed += _trackerBtn_PointerPressed;
             _trackerBtn.PointerReleased += _trackerBtn_PointerReleased;
-
+            _trackerBtn.PointerMoved += _trackerBtn_PointerMoved;
             for(int i=0;i<7;++i)
             {
                 btns[i].PointerPressed += btns_PointerPressed;
                 btns[i].PointerReleased += btns_PointerReleased;
                 btns[i].DoubleTapped += FlyButtonsPanel_DoubleTapped;
-                dtapped[i] = false;
+                btns[i].Opacity = dtapped[i] ? 1 : 0.7;
             }
         }
 
@@ -341,6 +349,7 @@ namespace YokeCtl
                 ButtonsPressed(this, new ButtonsPanelEventArgs(idx + 1, ButtonsPanelEventArgs.State.Pressed));
             e.Handled = true;
             btn.Opacity = 1;
+            dtapped[idx] = false;
         }
 
         private void btns_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -352,7 +361,6 @@ namespace YokeCtl
             {
                 if (ButtonsPressed != null)
                     ButtonsPressed(this, new ButtonsPanelEventArgs(idx + 1, ButtonsPanelEventArgs.State.Pressed));
-                dtapped[idx] = false;
                 btn.Opacity = 1;
             }
             else
@@ -456,6 +464,7 @@ namespace YokeCtl
         #region Tracker
         public event EventHandler TrackerBtnPressed;
         public event EventHandler TrackerBtnReleased;
+        public event PointerEventHandler TrackerBtnMoved;
         private void _trackerBtn_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _trackerBtn.CapturePointer(e.Pointer);
@@ -472,7 +481,12 @@ namespace YokeCtl
             e.Handled = true;
             _trackerBtn.Opacity = 0.5;
         }
-
+        private void _trackerBtn_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (TrackerBtnMoved != null)
+                TrackerBtnMoved(this, e);
+            e.Handled = true;
+        }
         #endregion
     }
 }

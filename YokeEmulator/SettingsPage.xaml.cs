@@ -93,7 +93,7 @@ namespace YokeEmulator
             localSettings.Values["BTNLABEL6"] = flybtn6TextBox.Text;
             localSettings.Values["BTNLABEL7"] = flybtn7TextBox.Text;
             localSettings.Values["BTNLABEL8"] = battlebtn1TextBox.Text;
-            localSettings.Values["BTNLABEL9"] = battlebtn1TextBox.Text;
+            localSettings.Values["BTNLABEL9"] = battlebtn2TextBox.Text;
 
             this.Frame.GoBack();
         }

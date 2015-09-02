@@ -102,8 +102,10 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BattleButtonsPanel.cs" />
     <Compile Include="ButtonsPanelEventArgs.cs" />
     <Compile Include="CurvePanel.cs" />
+    <Compile Include="CurveSlider.cs" />
     <Compile Include="FlyButtonsPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RudderPad.cs" />

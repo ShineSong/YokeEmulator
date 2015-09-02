@@ -106,7 +106,55 @@ namespace YokeCtl
             double y = Math.Pow(1 - t, 3) * _bfigure.StartPoint.Y + 3 * Math.Pow(1 - t, 2) * t * _bseg.Point1.Y + 3 * (1 - t) * Math.Pow(t, 2) * _bseg.Point2.Y + Math.Pow(t, 3) * _bseg.Point3.Y;
             return new Point(x, y);
         }
+        private double bezierX2t(double x)
+        {
+            //shengjin formula to solve cubic equation
+            double a = - 3 * _bseg.Point2.X + _bseg.Point3.X;
+            double b = + 3 * _bseg.Point2.X;
+            double c = 0;
+            double d = - x;
 
+            double A = b * b;
+            double B =  - 9 * a * d;
+            double C =  - 3 * b * d;
+            if (A == 0 && B == 0)
+                return -b / 3 / a;
+            double delta = B * B - 4 * A * C;
+            if (delta > 0)
+            {
+                double Y1 = A * b + 3 * a * (-B + Math.Sqrt(B * B - 4 * A * C)) * 0.5;
+                double Y2 = A * b + 3 * a * (-B - Math.Sqrt(B * B - 4 * A * C)) * 0.5;
+                double X = (-b - Math.Pow(Y1, 1.0 / 3.0) - Math.Pow(Y2, 1.0 / 3.0));
+                if (X >= 0 && X <= 1)
+                    return X;
+                else
+                    throw new ArgumentException();
+            } else if (delta < 0)
+            {
+                double theta = Math.Acos((2*A*b-3*a*B)/2/Math.Pow(A,1.5));
+                double X1 = (-b - 2 * Math.Sqrt(A) * Math.Cos(theta / 3)) / 3 / a;
+                double X2 = (-b + Math.Sqrt(A) * (Math.Cos(theta / 3) + Math.Sqrt(3) * Math.Sin(theta / 3))) / 3 / a;
+                double X3 = (-b + Math.Sqrt(A) * (Math.Cos(theta / 3) - Math.Sqrt(3) * Math.Sin(theta / 3))) / 3 / a;
+                if (X1 >= 0 && X1 <= 1)
+                    return X1;
+                else if (X2 >= 0 && X2 <= 1)
+                    return X2;
+                else if (X3 >= 0 && X3 <= 1)
+                    return X3;
+                else
+                    throw new ArgumentException();
+            }
+            else {
+                double X1 = -b / a + B / A;
+                double X2 = -B / A / 2;
+                if (X1 >= 0 && X1 <= 1)
+                    return X1;
+                else if (X2 >= 0 && X2 <= 1)
+                    return X2;
+                else
+                    throw new ArgumentException();
+            }
+        }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -137,6 +185,7 @@ namespace YokeCtl
 
         protected override Size ArrangeOverride(Size finalSize)
         {
+            if (ActualWidth == 0) return finalSize;
             foreach (UIElement element in Children)
             {
                 if (element.Equals(_bgcanvas))
@@ -151,13 +200,15 @@ namespace YokeCtl
                 {
                     pos = 0.5;
                 }
-
-                Point anchorPoint = cubicBezier(pos);
+                double t = bezierX2t(pos * ActualWidth);
+                Point anchorPoint = cubicBezier(t);
                 anchorPoint.X -= ItemHeight / 2;
                 anchorPoint.Y -= ItemHeight / 2;
                 element.Arrange(new Rect(anchorPoint, new Size(ItemHeight, ItemHeight)));
             }
             return finalSize;
         }
+
+        
     }
 }

@@ -152,13 +152,11 @@ namespace YokeCtl
             _trackerBtn.PointerMoved += _trackerBtn_PointerMoved;
         }
 
-        private void _trackerBtn_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            e.Handled = true;
-        }
-
+        
+        #region tracker
         public event EventHandler TrackerBtnPressed;
         public event EventHandler TrackerBtnReleased;
+        public event PointerEventHandler TrackerBtnMoved;
         private void _trackerBtn_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _trackerBtn.CapturePointer(e.Pointer);
@@ -175,7 +173,13 @@ namespace YokeCtl
             e.Handled = true;
             _trackerBtn.Opacity = 0.5;
         }
-
+        private void _trackerBtn_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (TrackerBtnMoved != null)
+                TrackerBtnMoved(this, e);
+            e.Handled = true;
+        }
+        #endregion
 
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {

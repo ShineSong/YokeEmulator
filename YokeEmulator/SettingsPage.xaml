@@ -43,6 +43,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -71,6 +72,7 @@
                         <TextBox x:Name="battlebtn1TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
                         <TextBox x:Name="battlebtn2TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
                     </StackPanel>
+                    <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Text="Copyright (C) 2015  SxS (shinesong_sxs@foxmail.com)" TextAlignment="Center"/>
                 </Grid>
             </ScrollViewer>
 

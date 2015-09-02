@@ -8,6 +8,9 @@ using Windows.Networking.Sockets;
 
 namespace YokeEmulator
 {
+    /// <summary>
+    /// This is the core class of the app. Packaging sensor relate operations and net io in the class.
+    /// </summary>
     public class ActionHelper
     {
         Inclinometer inclinometer = null;
@@ -15,37 +18,39 @@ namespace YokeEmulator
         public bool connected = false;
         public MagnetometerAccuracy InclinometerState;
         public event EventHandler InclinometerStateChanged;
-        public enum SensorMode { NONE = 0, JOYSTICK = 1, TRACKER = 2 };
+        public enum SensorMode { NONE = 0, JOYSTICK = 1, TRACKER = 2,CALIBRATION = 3 };
         public SensorMode mode = SensorMode.NONE;
-
+        public double offYaw, offRoll, offPitch;
         public ActionHelper()
         {
             inclinometer = Inclinometer.GetDefault();
             inclinometer.ReadingChanged += inclinometer_ReadingChanged;
             InclinometerState = MagnetometerAccuracy.Unknown;
-
-            App.comHelper.ConnectLose += ComHelper_ConnectLose;
+            offYaw = 0;offRoll = 0;offPitch = 0;
         }
 
-        private void ComHelper_ConnectLose()
-        {
-            connected = false;
-        }
-
-        public async Task connectTo(string ipaddr, int trackPort)
+        /// <summary>
+        /// connect to server
+        /// </summary>
+        /// <param name="ipaddr">target ip address</param>
+        /// <param name="axisPort">axis channel port</param>
+        /// <param name="ctlPort">control channel port</param>
+        /// <param name="trackPort">track channel port</param>
+        /// <returns></returns>
+        public async Task connectTo(string ipaddr,int axisPort,int ctlPort, int trackPort)
         {
             if (connected)
             {
                 //disconnecting
-                App.comHelper.disconnect();
                 connected = false;
+                App.comHelper.disconnect();
             }
             else
             {
                 try
                 {
                     //connecting
-                    await App.comHelper.connect(ipaddr, trackPort);
+                    await App.comHelper.connect(ipaddr,axisPort, ctlPort, trackPort);
                     connected = true;
                     mode = SensorMode.JOYSTICK;
                 }
@@ -58,28 +63,47 @@ namespace YokeEmulator
             }
         }
         
+        /// <summary>
+        /// send throttle value to axis-slider-0
+        /// </summary>
+        /// <param name="value"></param>
         public void OnSliderValueChanged(double value)
         {
             if (connected)
                 App.comHelper.sendCtl((byte)'s', value / 100.0);
         }
+        /// <summary>
+        /// send rudder value to axis-z
+        /// </summary>
+        /// <param name="value"></param>
         public void OnRudderValueChanged(double value)
         {
             if (connected)
                 App.comHelper.sendCtl((byte)'z', value / 100.0);
         }
+        /// <summary>
+        /// send button pressed event
+        /// </summary>
+        /// <param name="bid"></param>
         public void OnButtonPressed(int bid)
         {
             if (connected)
                 App.comHelper.sendCtl((byte)bid, 1);
         }
-
+        /// <summary>
+        /// send button released event
+        /// </summary>
+        /// <param name="bid"></param>
         public void OnButtonReleased(int bid)
         {
             if (connected)
                 App.comHelper.sendCtl((byte)bid, 0);
         }
-
+        /// <summary>
+        /// send sensor data to server ,depend on different mode.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void inclinometer_ReadingChanged(Inclinometer sender, InclinometerReadingChangedEventArgs args)
         {
             InclinometerReading reading = args.Reading;
@@ -92,15 +116,15 @@ namespace YokeEmulator
             }
 
             if (connected && mode == SensorMode.TRACKER)
-                App.comHelper.sendTrack(-reading.YawDegrees, -reading.RollDegrees, -reading.PitchDegrees);
+                App.comHelper.sendTrack(-(reading.YawDegrees-offYaw), -(reading.RollDegrees-offRoll), -(reading.PitchDegrees-offPitch));
             else if (connected && mode == SensorMode.JOYSTICK)
-                App.comHelper.sendAxis(reading.PitchDegrees / 120 + 0.5, reading.RollDegrees / 100 + 0.5);
-        }
-
-        private void accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
-        {
-            if (connected && mode == SensorMode.JOYSTICK)
-                App.comHelper.sendAxis(-args.Reading.AccelerationY * 0.5 + 0.5, -args.Reading.AccelerationX + 0.5);
+                App.comHelper.sendAxis((reading.PitchDegrees-offPitch) / 120 + 0.5, -(reading.RollDegrees-offRoll) / 100 + 0.5);
+            else if (mode == SensorMode.CALIBRATION)
+            {
+                offYaw = reading.YawDegrees;
+                offRoll = reading.RollDegrees;
+                offPitch = reading.PitchDegrees;
+            }
         }
     }
 }

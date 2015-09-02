@@ -47,7 +47,7 @@ namespace YokeCtl
                 typeof(YESlider),
                 new PropertyMetadata(20,OnThumbSizeChanged));
         public double ThumbSize {
-            get { return (int)GetValue(ThumbSizeProperty);}
+            get { return (double)GetValue(ThumbSizeProperty);}
             set { SetValue(ThumbSizeProperty, value); }
         }
         private static void OnThumbSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -151,7 +151,7 @@ namespace YokeCtl
             var point = e.GetCurrentPoint(_canvas).Position;
             double old = Value;
             double _value = (ActualHeight - point.Y - _thumb.ActualHeight * 0.5) / (ActualHeight - _thumb.ActualWidth) * 100;
-            if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value; ;
+            if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value;
             if(ValueChanged!=null)
                 ValueChanged(this,new SliderValueChangedEventArgs(old,Value, this));
             base.OnPointerEntered(e);
@@ -161,7 +161,7 @@ namespace YokeCtl
             var point = e.GetCurrentPoint(_canvas).Position;
             double old = Value;
             double _value = (ActualHeight - point.Y - _thumb.ActualHeight * 0.5) / (ActualHeight - _thumb.ActualWidth) * 100;
-            if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value; ;
+            if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value;
             if (ValueChanged != null)
                 ValueChanged(this, new SliderValueChangedEventArgs(old, Value, this));
             base.OnPointerMoved(e);
@@ -171,7 +171,7 @@ namespace YokeCtl
             var point = e.GetCurrentPoint(_canvas).Position;
             double old = Value;
             double _value = (ActualHeight - point.Y - _thumb.ActualHeight * 0.5) / (ActualHeight - _thumb.ActualWidth) * 100;
-            if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value; ;
+            if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value;
             if (ValueChanged != null)
                 ValueChanged(this, new SliderValueChangedEventArgs(old, Value, this));
             base.OnPointerPressed(e);
@@ -180,6 +180,7 @@ namespace YokeCtl
         protected override void OnPointerReleased(PointerRoutedEventArgs e)
         {
             base.OnPointerReleased(e);
+            ReleasePointerCapture(e.Pointer);
         }
     }
 }

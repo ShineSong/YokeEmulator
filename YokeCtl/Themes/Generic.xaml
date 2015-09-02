@@ -15,6 +15,7 @@
                             <TextBlock x:Name="PART_Reading" Width="{TemplateBinding ThumbSize}" Height="{TemplateBinding ThumbSize}" FontSize="{TemplateBinding FontSize}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" TextAlignment="Center"/>
                         </Grid>
                         <Line x:Name="PART_Line2" Stroke="{TemplateBinding Foreground}"/>
+                        <Rectangle Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Fill="Transparent"/>
                     </Canvas>
                 </ControlTemplate>
             </Setter.Value>
@@ -34,7 +35,7 @@
                             <Canvas x:Name="PART_VerticalTick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False" />
                             <Canvas x:Name="PART_ArcTick" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False" />
                             <Ellipse x:Name="PART_rudderBtn" Fill="{TemplateBinding Foreground}" Opacity="0.8"/>
-                            <Ellipse x:Name="PART_trackerBtn" Fill="Pink" Opacity="0.5" />
+                            <Ellipse x:Name="PART_trackerBtn" Fill="Pink" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}" Opacity="0.5" />
                         </Canvas>
                     </Border>
                 </ControlTemplate>
@@ -52,7 +53,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
                         <Canvas x:Name="PART_Canvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Path x:Name="PART_RoundTriangle" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}" Fill="#4CFFFFFF" />
-                            <Ellipse x:Name="PART_trackerBtn" Fill="Pink" Opacity="0.5" />
+                            <Ellipse x:Name="PART_trackerBtn" Fill="Pink" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}" Opacity="0.5" />
 
                             <Grid x:Name="PART_btnGrid1">
                                 <Ellipse x:Name="PART_btn1" Fill="#FF00DCFF" Opacity="0.5"/>
@@ -94,6 +95,58 @@
                                 <Ellipse x:Name="PART_btn7" Fill="#FF00DCFF" Opacity="0.5"/>
                                 <Viewbox x:Name="PART_viewbox7" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
                                     <TextBlock x:Name="PART_btn7Text" Margin="5"/>
+                                </Viewbox>
+                            </Grid>
+                        </Canvas>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:BattleButtonsPanel" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:BattleButtonsPanel">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Canvas x:Name="PART_Canvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Path x:Name="PART_RoundButton1" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}" Fill="#4CFFFFFF" />
+                            <Path x:Name="PART_RoundButton2" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}" Fill="White" />
+                            <Ellipse x:Name="PART_trackerBtn" Fill="Pink" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}" Opacity="0.5" />
+                            <Grid x:Name="PART_btnGrid1" >
+                                <Viewbox x:Name="PART_viewbox1" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn1Text" Margin="5" Foreground="White"/>
+                                </Viewbox>
+                            </Grid>
+                            <Grid x:Name="PART_btnGrid2" >
+                                <Viewbox x:Name="PART_viewbox2" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False">
+                                    <TextBlock x:Name="PART_btn2Text" Margin="5" Foreground="Black"/>
+                                </Viewbox>
+                            </Grid>
+                        </Canvas>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:CurveSlider" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:CurveSlider">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Canvas>
+                            <Path x:Name="PART_Path" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}"/>
+                            <Grid x:Name="PART_ThumbGrid">
+                                <Ellipse Width="{TemplateBinding ThumbSize}" Height="{TemplateBinding ThumbSize}" Fill="{TemplateBinding Stroke}" Stroke="{TemplateBinding Stroke}" StrokeThickness="{TemplateBinding StrokeThickness}"/>
+                                <Viewbox Width="{TemplateBinding ThumbSize}" Height="{TemplateBinding ThumbSize}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <TextBlock x:Name="PART_Reading" Margin="2" Foreground="Black" />
                                 </Viewbox>
                             </Grid>
                         </Canvas>

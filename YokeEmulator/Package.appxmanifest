@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="07efb827-2857-4165-8002-6c03f1e63490" Publisher="CN=SxS" Version="0.3.0.0" />
+  <Identity Name="07efb827-2857-4165-8002-6c03f1e63490" Publisher="CN=SxS" Version="1.0.0.0" />
   <mp:PhoneIdentity PhoneProductId="07efb827-2857-4165-8002-6c03f1e63490" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>YokeEmulator</DisplayName>
@@ -20,7 +20,7 @@
         <m3:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
         </m3:DefaultTile>
-        <m3:SplashScreen Image="Assets\SplashScreen.png" />
+        <m3:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="transparent" />
         <m3:InitialRotationPreference>
           <m3:Rotation Preference="landscape" />
         </m3:InitialRotationPreference>

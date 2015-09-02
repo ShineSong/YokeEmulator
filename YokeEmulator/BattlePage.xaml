@@ -1,0 +1,49 @@
+﻿<Page
+    x:Class="YokeEmulator.BattlePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YokeEmulator"
+    xmlns:YokeCtl="using:YokeCtl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Background>
+        <ImageBrush ImageSource="Assets/il2-bos.jpg" Stretch="Fill"/>
+    </Page.Background>
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Rectangle x:Name="SwipeArea" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Fill="Transparent" ManipulationMode="TranslateX"/>
+        <Image x:Name="logoImage" Source="Assets/yoke_logo_w.png" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,5" Width="150" ManipulationMode="TranslateX,TranslateY"/>
+        <YokeCtl:YESlider x:Name="throttleSlider" Grid.Row="2" Grid.Column="1" Background="Transparent" Foreground="White" StrockThickness="5" Value="0" ThumbSize="50" FontSize="15" ValueChanged="throttleSlider_ValueChanged" />
+        <TextBlock x:Name="MsgBox" Grid.Row="0" Grid.Column="1" FontSize="12"  Height="30" TextAlignment="Center" VerticalAlignment="Bottom" IsHitTestVisible="False"/>
+        <TextBlock x:Name="MagnetStateBox" Grid.Row="3" Grid.Column="0" Padding="10,0,0,0" FontSize="16" TextAlignment="Left" IsHitTestVisible="False" FontWeight="Bold"/>
+        <Viewbox Grid.Row="3" Grid.Column="1" Margin="-50,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="25">
+            <TextBlock x:Name="leftCalibrationBtn" Text="Calibration" FontFamily="Agency FB" FontWeight="Bold" PointerPressed="leftCalibrationBtn_PointerPressed" PointerReleased="leftCalibrationBtn_PointerReleased"/>
+        </Viewbox>
+        <Viewbox Grid.Row="3" Grid.Column="1" Margin="0,0,-50,0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="25">
+            <TextBlock x:Name="rightCalibrationBtn" Text="Calibration" FontFamily="Agency FB" FontWeight="Bold" PointerPressed="rightCalibrationBtn_PointerPressed" PointerReleased="rightCalibrationBtn_PointerReleased"/>
+        </Viewbox>
+        <YokeCtl:CurvePanel x:Name="LeftBar" Grid.Row="1" Grid.Column="0" StrokeThickness="5" ItemHeight="40" FlowDirection="LeftToRight" >
+            <Image x:Name="optButton" DataContext="0.1" Source="Assets/opt.png" Opacity="0.7" Tapped="optButton_Tapped"/>
+            <Image x:Name="conButton" DataContext="0.3" Source="Assets/zoom.png" Opacity="0.7" Tapped="conButton_Tapped" />
+        </YokeCtl:CurvePanel>
+        <YokeCtl:RudderPad x:Name="rudderPad" Grid.Row="2" Grid.Column="0" Stroke="#7FFFFFFF" StrokeThickness="5" Resilience="False" Value="50" Width="210" Foreground="#FF98F9F0" Margin="0,0,20,0" ValueChanged="rudderPad_ValueChanged" TrackerBtnPressed="leftTrackerBtnPressed" TrackerBtnReleased="leftTrackerBtnReleased" TrackerBtnMoved="leftTrackerBtn_PointerMoved"/>
+        <YokeCtl:BattleButtonsPanel x:Name="batButtonsPanel" Grid.Row="2" Grid.Column="2" Stroke="#7FFFFFFF" StrokeThickness="5" Width="210" Foreground="#FF98F9F0" Margin="20,0,0,0" ButtonsPressed="batButtons_Pressed" ButtonsReleased="batButtons_Released" TrackerBtnPressed="rightTrackerBtnPressed" TrackerBtnReleased="rightTrackerBtnReleased" TrackerBtnMoved="rightTrackerBtn_PointerMoved"/>
+        
+        <YokeCtl:CurvePanel x:Name="RightBar" Grid.Row="1" Grid.Column="2" StrokeThickness="5" ItemHeight="40" FlowDirection="RightToLeft" >
+            <Image x:Name="sensorNoneButton" DataContext="0.17" Source="Assets/thr.png" Opacity="0.7" Tapped="sensorNoneButton_Tapped"/>
+            <Image x:Name="sensorJoystickButton" DataContext="0.47" Source="Assets/opt.png" Opacity="1" Tapped="sensorJoystickButton_Tapped"/>
+            <Image x:Name="sensorTrackerButton" DataContext="0.77" Source="Assets/zoom.png" Opacity="0.7" Tapped="sensorTrackerButton_Tapped"/>
+        </YokeCtl:CurvePanel>
+    </Grid>
+</Page>

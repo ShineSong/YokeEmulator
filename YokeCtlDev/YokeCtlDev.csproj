@@ -119,6 +119,7 @@
     <None Include="YokeCtlDev_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\flypagebackground.jpg" />
     <Content Include="Assets\Logo.scale-100.png" />
     <Content Include="Assets\opt.png" />
     <Content Include="Assets\SmallLogo.scale-100.png" />

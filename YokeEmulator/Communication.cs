@@ -11,7 +11,7 @@ using Windows.UI.Xaml;
 namespace YokeEmulator
 {
     /// <summary>
-    /// 通讯对象及函数封装类
+    /// Communication class and operation.
     /// </summary>
     public class Communication
     {
@@ -24,22 +24,21 @@ namespace YokeEmulator
         DatagramSocket trackSocket = null;
         const int trackMsgSize = 48;
         byte[] trackBuffer;
-
-        public delegate void ConnectLoseHandler();
-        public event ConnectLoseHandler ConnectLose;
-
+        public double _trackZ;
 
         public bool connected = false;
         int trackPort = 4242;
         string host = null;
 
         /// <summary>
-        /// 连接到Server.可能抛出异常.
+        /// connect to server
         /// </summary>
-        /// <param name="_host">目标地址</param>
-        /// <param name="_trackPort">Track UDP 端口</param>
+        /// <param name="_host">target ip address</param>
+        /// <param name="_axisPort">axis channel port</param>
+        /// <param name="_ctlPort">control channel port</param>
+        /// <param name="_trackPort">track channel port</param>
         /// <returns></returns>
-        public async Task connect(string _host, int _trackPort)
+        public async Task connect(string _host,int _axisPort,int _ctlPort, int _trackPort)
         {
             host = _host; trackPort = _trackPort;
             AxisBuffer = new byte[AxisMsgSize];
@@ -51,21 +50,21 @@ namespace YokeEmulator
             ctlSocket = new DatagramSocket();
             trackSocket = new DatagramSocket();
             HostName hostname = new HostName(host);
-            await axisSocket.ConnectAsync(hostname, "23333");
-            await ctlSocket.ConnectAsync(hostname, "23334");
+            await axisSocket.ConnectAsync(hostname, _axisPort.ToString());
+            await ctlSocket.ConnectAsync(hostname, _ctlPort.ToString());
             await trackSocket.ConnectAsync(hostname, trackPort.ToString());
             connected = true;
         }
 
         /// <summary>
-        /// 断开连接
+        /// cut connection down
         /// </summary>
         public void disconnect()
         {
+            connected = false;
             axisSocket.Dispose();
             ctlSocket.Dispose();
             trackSocket.Dispose();
-            connected = false;
         }
 
         /// <summary>
@@ -88,7 +87,7 @@ namespace YokeEmulator
         /// <param name="op">操作符</param>
         /// <param name="param">参数</param>
         public void sendCtl(byte op, double param)
-        { 
+        {
             byte[] paramByte = BitConverter.GetBytes(param);
             CtlBuffer[0] = op;
             paramByte.CopyTo(CtlBuffer, 1);
@@ -114,28 +113,15 @@ namespace YokeEmulator
         /// <param name="roll">roll</param>
         public void sendTrack(double yaw, double pitch, double roll)
         {
+            byte[] tz = BitConverter.GetBytes(_trackZ);
             byte[] rx = BitConverter.GetBytes(yaw);
             byte[] ry = BitConverter.GetBytes(pitch);
             byte[] rz = BitConverter.GetBytes(roll);
+            tz.CopyTo(trackBuffer, 16);
             rx.CopyTo(trackBuffer, 24);
             ry.CopyTo(trackBuffer, 32);
             rz.CopyTo(trackBuffer, 40);
             trackSocket.OutputStream.WriteAsync(trackBuffer.AsBuffer());
-        }
-        /// <summary>
-        /// 连接丢失时三次重拨,仍连接不上啧激活ConnectLose事件.
-        /// </summary>
-        async void onLoseConnect()
-        {
-            int reConnectCount = 0;
-            while (reConnectCount < 1)
-            {
-                try { await connect(host, trackPort); } catch (Exception) { reConnectCount++; }
-            }
-            disconnect();
-            Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => {
-                ConnectLose();
-            });
         }
     }
 }

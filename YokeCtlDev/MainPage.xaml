@@ -6,9 +6,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:YokeCtl="using:YokeCtl"
     x:Class="YokeCtlDev.MainPage"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    >
+    <Page.Background>
+        <ImageBrush ImageSource="Assets/flypagebackground.jpg" Stretch="Uniform"/>
+    </Page.Background>
 
-    <Grid Background="Black">
+    <Grid>
         <Grid.Resources>
 
         </Grid.Resources>
@@ -17,14 +21,6 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Canvas Grid.Column="0">
-            
-                <Ellipse Fill="White" Width="100" Height="100"/>
-            <Viewbox Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Width="100" Height="100">
-                <TextBlock Text="0000" Foreground="Black" Margin="5"/>
-            </Viewbox>
-        </Canvas>
-
-        <YokeCtl:FlyButtonsPanel Grid.Column="1" Stroke="White" StrokeThickness="5"/>
-    </Grid>
+        <YokeCtl:CurveSlider ThumbSize="20" Height="100" Margin="20" Value="7" Orientation="RightToLeft"/>
+        </Grid>
 </Page>
