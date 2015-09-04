@@ -328,7 +328,7 @@ namespace YokeCtl
                 btns[i].PointerPressed += btns_PointerPressed;
                 btns[i].PointerReleased += btns_PointerReleased;
                 btns[i].DoubleTapped += FlyButtonsPanel_DoubleTapped;
-                btns[i].Opacity = dtapped[i] ? 1 : 0.7;
+                btns[i].Opacity = dtapped[i] ? 1 : 0.5;
             }
         }
 

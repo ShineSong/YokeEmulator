@@ -151,7 +151,7 @@ namespace YokeCtl
                     return X1;
                 else if (X2 >= 0 && X2 <= 1)
                     return X2;
-                else if (X3 >= 0 && X3 <= 1)
+                else if (X3 >= -0.0001 && X3 <= 1.0001)
                     return X3;
                 else
                     throw new ArgumentException();
@@ -229,7 +229,7 @@ namespace YokeCtl
             if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value;
             if (ValueChanged != null)
                 ValueChanged(this, new SliderValueChangedEventArgs(old, Value, this));
-            base.OnPointerEntered(e);
+            e.Handled = true;
         }
         protected override void OnPointerMoved(PointerRoutedEventArgs e)
         {
@@ -240,7 +240,7 @@ namespace YokeCtl
             if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value;
             if (ValueChanged != null)
                 ValueChanged(this, new SliderValueChangedEventArgs(old, Value, this));
-            base.OnPointerMoved(e);
+            e.Handled = true;
         }
         protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
@@ -251,13 +251,13 @@ namespace YokeCtl
             if (_value > 100) Value = 100; else if (_value < 0) Value = 0; else Value = _value;
             if (ValueChanged != null)
                 ValueChanged(this, new SliderValueChangedEventArgs(old, Value, this));
-            base.OnPointerPressed(e);
             CapturePointer(e.Pointer);
+            e.Handled = true;
         }
         protected override void OnPointerReleased(PointerRoutedEventArgs e)
         {
-            base.OnPointerReleased(e);
             ReleasePointerCapture(e.Pointer);
+            e.Handled = true;
         }
     }
 }

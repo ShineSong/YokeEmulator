@@ -30,6 +30,8 @@ namespace YokeEmulator
         public static ActionHelper actionHelper = new ActionHelper();
         public static double rudderValue=0;
         public static double throttleValue=0;
+        public static double leftSliderValue = 0;
+        public static double rightSliderValue = 0;
         public static bool[] flyBtnPanelDTapped=new bool[7];
         public static bool[] batBtnPanelDTapped = new bool[2];
         /// <summary>

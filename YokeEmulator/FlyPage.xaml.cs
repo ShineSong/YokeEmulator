@@ -49,6 +49,7 @@ namespace YokeEmulator
             rightTrackBtnPressed = false;
             leftCaliBtnPressed = false;
             rightCaliBtnPressed = false;
+            previousSensorMode = ActionHelper.SensorMode.JOYSTICK;
             App.actionHelper.InclinometerStateChanged += ActionHelper_InclinometerStateChanged;
 
             logoGestureInputProcessor(logoGestureRecognizer);
@@ -87,7 +88,30 @@ namespace YokeEmulator
                 flyButtonsPanel.Btn7Text = localSettings.Values["BTNLABEL7"].ToString();
             rudderPad.Value = App.rudderValue;
             throttleSlider.Value = App.throttleValue;
+            leftSlider.Value = App.leftSliderValue;
+            rightSlider.Value = App.rightSliderValue;
             flyButtonsPanel.DoubleTappedProperty= App.flyBtnPanelDTapped;
+
+            switch (App.actionHelper.mode)
+            {
+                case ActionHelper.SensorMode.NONE:
+                    logoImage.Opacity = 0.5;
+                    logoImage.Source = joyLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.TRACKER:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = trackerLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.JOYSTICK:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = joyLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.CALIBRATION:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = caliLogoImage.Source;
+                    break;
+            }
+            conButton.Source = App.actionHelper.connected ? linkImage.Source : unlinkImage.Source;
         }
         /// <summary>
         /// restore control value for temporary.
@@ -97,6 +121,8 @@ namespace YokeEmulator
         {
             App.rudderValue = rudderPad.Value;
             App.throttleValue = throttleSlider.Value;
+            App.leftSliderValue = leftSlider.Value;
+            App.rightSliderValue = rightSlider.Value;
             App.flyBtnPanelDTapped = flyButtonsPanel.DoubleTappedProperty;
             displayRequest.RequestRelease();
         }
@@ -120,6 +146,24 @@ namespace YokeEmulator
         private void rudderPad_ValueChanged(object sender, SliderValueChangedEventArgs e)
         {
             App.actionHelper.OnRudderValueChanged(e.NewValue);
+        }
+        /// <summary>
+        /// left slider value changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void leftSlider_ValueChanged(object sender, SliderValueChangedEventArgs e)
+        {
+            App.actionHelper.OnLeftSliderValueChanged(e.NewValue);
+        }
+        /// <summary>
+        /// left slider value changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void rightSlider_ValueChanged(object sender, SliderValueChangedEventArgs e)
+        {
+            App.actionHelper.OnRightValueChanged(e.NewValue);
         }
         /// <summary>
         /// buttons pressed
@@ -151,6 +195,25 @@ namespace YokeEmulator
             {
                 previousSensorMode = App.actionHelper.mode;
                 App.actionHelper.mode = ActionHelper.SensorMode.TRACKER;
+                switch (App.actionHelper.mode)
+                {
+                    case ActionHelper.SensorMode.NONE:
+                        logoImage.Opacity = 0.5;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.TRACKER:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = trackerLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.JOYSTICK:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.CALIBRATION:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = caliLogoImage.Source;
+                        break;
+                }
             }
             
         }
@@ -163,7 +226,29 @@ namespace YokeEmulator
         {
             rightTrackBtnPressed = false;
             if(!leftTrackBtnPressed)
+            {
                 App.actionHelper.mode = previousSensorMode;
+                switch (App.actionHelper.mode)
+                {
+                    case ActionHelper.SensorMode.NONE:
+                        logoImage.Opacity = 0.5;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.TRACKER:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = trackerLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.JOYSTICK:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.CALIBRATION:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = caliLogoImage.Source;
+                        break;
+                }
+            }
+
         }
         /// <summary>
         /// right tracker button moved(zoom)
@@ -192,6 +277,25 @@ namespace YokeEmulator
             {
                 previousSensorMode = App.actionHelper.mode;
                 App.actionHelper.mode = ActionHelper.SensorMode.TRACKER;
+                switch (App.actionHelper.mode)
+                {
+                    case ActionHelper.SensorMode.NONE:
+                        logoImage.Opacity = 0.5;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.TRACKER:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = trackerLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.JOYSTICK:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.CALIBRATION:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = caliLogoImage.Source;
+                        break;
+                }
             }
         }
         /// <summary>
@@ -203,7 +307,28 @@ namespace YokeEmulator
         {
             leftTrackBtnPressed = false;
             if(!rightTrackBtnPressed)
+            {
                 App.actionHelper.mode = previousSensorMode;
+                switch (App.actionHelper.mode)
+                {
+                    case ActionHelper.SensorMode.NONE:
+                        logoImage.Opacity = 0.5;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.TRACKER:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = trackerLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.JOYSTICK:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.CALIBRATION:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = caliLogoImage.Source;
+                        break;
+                }
+            }
         }
         /// <summary>
         /// left tracker button moved
@@ -233,6 +358,25 @@ namespace YokeEmulator
                 previousSensorMode = App.actionHelper.mode;
                 App.actionHelper.mode = ActionHelper.SensorMode.CALIBRATION;
                 MsgBox.Text = "Calibrating";
+                switch (App.actionHelper.mode)
+                {
+                    case ActionHelper.SensorMode.NONE:
+                        logoImage.Opacity = 0.5;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.TRACKER:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = trackerLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.JOYSTICK:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.CALIBRATION:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = caliLogoImage.Source;
+                        break;
+                }
             }
         }
         /// <summary>
@@ -245,6 +389,25 @@ namespace YokeEmulator
             leftCaliBtnPressed = false;
             App.actionHelper.mode = previousSensorMode;
             MsgBox.Text = "";
+            switch (App.actionHelper.mode)
+            {
+                case ActionHelper.SensorMode.NONE:
+                    logoImage.Opacity = 0.5;
+                    logoImage.Source = joyLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.TRACKER:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = trackerLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.JOYSTICK:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = joyLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.CALIBRATION:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = caliLogoImage.Source;
+                    break;
+            }
         }
         /// <summary>
         /// right calibration btn pressed
@@ -259,6 +422,25 @@ namespace YokeEmulator
                 previousSensorMode = App.actionHelper.mode;
                 App.actionHelper.mode = ActionHelper.SensorMode.CALIBRATION;
                 MsgBox.Text = "Calibrating";
+                switch (App.actionHelper.mode)
+                {
+                    case ActionHelper.SensorMode.NONE:
+                        logoImage.Opacity = 0.5;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.TRACKER:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = trackerLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.JOYSTICK:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.CALIBRATION:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = caliLogoImage.Source;
+                        break;
+                }
             }
         }
         /// <summary>
@@ -271,6 +453,25 @@ namespace YokeEmulator
             rightCaliBtnPressed = false;
             App.actionHelper.mode = previousSensorMode;
             MsgBox.Text = "";
+            switch (App.actionHelper.mode)
+            {
+                case ActionHelper.SensorMode.NONE:
+                    logoImage.Opacity = 0.5;
+                    logoImage.Source = joyLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.TRACKER:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = trackerLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.JOYSTICK:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = joyLogoImage.Source;
+                    break;
+                case ActionHelper.SensorMode.CALIBRATION:
+                    logoImage.Opacity = 1;
+                    logoImage.Source = caliLogoImage.Source;
+                    break;
+            }
         }
         /// <summary>
         /// show inclinometer yaw accuracy
@@ -308,52 +509,33 @@ namespace YokeEmulator
         /// <param name="e"></param>
         private async void conButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            try
+            //connecting
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            if (localSettings.Values.ContainsKey("IPADDR"))
             {
-                //connecting
-                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                if (localSettings.Values.ContainsKey("IPADDR"))
+                int trackPort;
+                if (localSettings.Values.ContainsKey("TRACKPORT"))
                 {
-                    int trackPort;
-                    if (localSettings.Values.ContainsKey("TRACKPORT"))
+                    try
                     {
-                        try
-                        {
-                            trackPort = int.Parse(localSettings.Values["TRACKPORT"].ToString());
-                        }
-                        catch (Exception)
-                        {
-                            trackPort = 4242;
-                        }
+                        trackPort = int.Parse(localSettings.Values["TRACKPORT"].ToString());
                     }
-                    else
+                    catch (Exception)
                     {
-                        this.Frame.Navigate(typeof(SettingsPage));
-                        return;
+                        trackPort = 4242;
                     }
-                    await App.actionHelper.connectTo(localSettings.Values["IPADDR"].ToString(), 23333, 23334, trackPort);
-                    conButton.Opacity = App.actionHelper.connected ? 1 : 0.7;
-                    MsgBox.Text = App.actionHelper.connected ? "Online" : "Offline";
                 }
                 else
                 {
                     this.Frame.Navigate(typeof(SettingsPage));
+                    return;
                 }
-
+                await App.actionHelper.connectTo(localSettings.Values["IPADDR"].ToString(), 23333, 23334, trackPort);
+                conButton.Source = App.actionHelper.connected ? linkImage.Source : unlinkImage.Source;
             }
-            catch (Exception exception)
+            else
             {
-                switch (SocketError.GetStatus(exception.HResult))
-                {
-                    case SocketErrorStatus.HostNotFound:
-                        // Handle HostNotFound Error
-                        MsgBox.Text = "NotFound";
-                        break;
-                    default:
-                        // Handle Unknown Error
-                        MsgBox.Text = "FAILED";
-                        break;
-                }
+                this.Frame.Navigate(typeof(SettingsPage));
             }
         }
         /// <summary>
@@ -363,43 +545,8 @@ namespace YokeEmulator
         /// <param name="e"></param>
         private void optButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            
             this.Frame.Navigate(typeof(SettingsPage));
-        }
-        /// <summary>
-        /// change sensor mode to None
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void sensorNoneButton_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            App.actionHelper.mode = ActionHelper.SensorMode.NONE;
-            sensorNoneButton.Opacity = 1;
-            sensorJoystickButton.Opacity = 0.7;
-            sensorTrackerButton.Opacity = 0.7;
-        }
-        /// <summary>
-        /// change sensor mode to joystick
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void sensorJoystickButton_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            App.actionHelper.mode = ActionHelper.SensorMode.JOYSTICK;
-            sensorNoneButton.Opacity = 0.7;
-            sensorJoystickButton.Opacity = 1;
-            sensorTrackerButton.Opacity = 0.7;
-        }
-        /// <summary>
-        /// change sensor mode to tracker
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void sensorTrackerButton_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            App.actionHelper.mode = ActionHelper.SensorMode.TRACKER;
-            sensorNoneButton.Opacity = 0.7;
-            sensorJoystickButton.Opacity = 0.7;
-            sensorTrackerButton.Opacity = 1;
         }
         #endregion
 
@@ -411,7 +558,7 @@ namespace YokeEmulator
         private void logoGestureInputProcessor(Windows.UI.Input.GestureRecognizer gr)
         {
             this.logoGestureRecognizer = gr;
-            this.logoGestureRecognizer.GestureSettings = GestureSettings.ManipulationTranslateY | GestureSettings.Hold;
+            this.logoGestureRecognizer.GestureSettings = GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateX;
             
             this.logoImage.PointerCanceled += OnLogoPointerCanceled;
             this.logoImage.PointerPressed += OnLogoPointerPressed;
@@ -431,6 +578,57 @@ namespace YokeEmulator
                 MsgBox.Text = "SwipeDown";
             else if (args.Velocities.Linear.Y < -0.5 && args.Cumulative.Translation.Y < -20)
                 MsgBox.Text = "SwipeUp";
+            if (args.Velocities.Linear.X > 0.5 && args.Cumulative.Translation.X > 50)
+            {
+                int mode = (int)App.actionHelper.mode + 1;
+                mode = mode % 3;
+                App.actionHelper.mode = (ActionHelper.SensorMode)mode;
+                switch (App.actionHelper.mode)
+                {
+                    case ActionHelper.SensorMode.NONE:
+                        logoImage.Opacity = 0.5;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.TRACKER:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = trackerLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.JOYSTICK:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.CALIBRATION:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = caliLogoImage.Source;
+                        break;
+                }
+            }
+            else if (args.Velocities.Linear.X < -0.5 && args.Cumulative.Translation.X < -50)
+            {
+                int mode = (int)App.actionHelper.mode - 1;
+                if (mode < 0) mode = 2;
+                mode = mode % 3;
+                App.actionHelper.mode = (ActionHelper.SensorMode)mode;
+                switch (App.actionHelper.mode)
+                {
+                    case ActionHelper.SensorMode.NONE:
+                        logoImage.Opacity = 0.5;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.TRACKER:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = trackerLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.JOYSTICK:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = joyLogoImage.Source;
+                        break;
+                    case ActionHelper.SensorMode.CALIBRATION:
+                        logoImage.Opacity = 1;
+                        logoImage.Source = caliLogoImage.Source;
+                        break;
+                }
+            }
         }
 
         

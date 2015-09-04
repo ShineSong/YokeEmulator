@@ -19,7 +19,20 @@ namespace YokeEmulator
         public MagnetometerAccuracy InclinometerState;
         public event EventHandler InclinometerStateChanged;
         public enum SensorMode { NONE = 0, JOYSTICK = 1, TRACKER = 2,CALIBRATION = 3 };
-        public SensorMode mode = SensorMode.NONE;
+        private SensorMode _mode = SensorMode.JOYSTICK;
+        public SensorMode mode
+        {
+            get
+            {
+                return _mode;
+            }
+            set
+            {
+                _mode = value;
+                if (connected && _mode == SensorMode.NONE)
+                    App.comHelper.sendAxis(0.5, 0.5);
+            }
+        }
         public double offYaw, offRoll, offPitch;
         public ActionHelper()
         {
@@ -52,7 +65,6 @@ namespace YokeEmulator
                     //connecting
                     await App.comHelper.connect(ipaddr,axisPort, ctlPort, trackPort);
                     connected = true;
-                    mode = SensorMode.JOYSTICK;
                 }
                 catch (Exception exception)
                 {
@@ -80,6 +92,24 @@ namespace YokeEmulator
         {
             if (connected)
                 App.comHelper.sendCtl((byte)'z', value / 100.0);
+        }
+        /// <summary>
+        /// send rudder value to axis-rx
+        /// </summary>
+        /// <param name="value"></param>
+        public void OnLeftSliderValueChanged(double value)
+        {
+            if (connected)
+                App.comHelper.sendCtl((byte)'X', value / 100.0);
+        }
+        /// <summary>
+        /// send rudder value to axis-ry
+        /// </summary>
+        /// <param name="value"></param>
+        public void OnRightValueChanged(double value)
+        {
+            if (connected)
+                App.comHelper.sendCtl((byte)'Y', value / 100.0);
         }
         /// <summary>
         /// send button pressed event
