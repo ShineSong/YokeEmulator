@@ -40,7 +40,7 @@ namespace YokeEmulator
 
         bool leftCaliBtnPressed;
         bool rightCaliBtnPressed;
-        
+        bool activeRequested;
         public BattlePage()
         {
             this.InitializeComponent();
@@ -66,8 +66,11 @@ namespace YokeEmulator
             if (localSettings.Values.ContainsKey("KEEPSCREENON"))
                 if ((bool)localSettings.Values["KEEPSCREENON"])
                 {
+                    activeRequested = true;
                     displayRequest.RequestActive();
                 }
+                else
+                    activeRequested = false;
             if (localSettings.Values.ContainsKey("RUDDERRESILIENCE"))
                 rudderPad.Resilience = (bool)localSettings.Values["RUDDERRESILIENCE"];
 
@@ -101,6 +104,21 @@ namespace YokeEmulator
                     break;
             }
             conButton.Source = App.actionHelper.connected ? linkImage.Source : unlinkImage.Source;
+            switch (App.actionHelper.InclinometerState)
+            {
+                case MagnetometerAccuracy.High:
+                    MagnetStateBox.Foreground = new SolidColorBrush(Colors.Green);
+                    MagnetStateBox.Text = "High"; break;
+                case MagnetometerAccuracy.Approximate:
+                    MagnetStateBox.Foreground = new SolidColorBrush(Colors.YellowGreen);
+                    MagnetStateBox.Text = "Approximate"; break;
+                case MagnetometerAccuracy.Unreliable:
+                    MagnetStateBox.Foreground = new SolidColorBrush(Colors.OrangeRed);
+                    MagnetStateBox.Text = "Unreliable"; break;
+                case MagnetometerAccuracy.Unknown:
+                    MagnetStateBox.Foreground = new SolidColorBrush(Colors.Gray);
+                    MagnetStateBox.Text = "Unknown"; break;
+            }
         }
         /// <summary>
         /// restore control value for temporary.
@@ -108,12 +126,13 @@ namespace YokeEmulator
         /// <param name="e"></param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            if(activeRequested)
+                    displayRequest.RequestRelease();
             App.rudderValue = rudderPad.Value;
             App.throttleValue = throttleSlider.Value;
             App.leftSliderValue = leftSlider.Value;
             App.rightSliderValue = rightSlider.Value;
             App.batBtnPanelDTapped = batButtonsPanel.DoubleTappedProperty;
-            displayRequest.RequestRelease();
         }
         #endregion
 
