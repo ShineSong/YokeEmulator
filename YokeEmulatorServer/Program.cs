@@ -20,7 +20,7 @@ namespace YokeEmulatorServer
     }
     class Program
     {
-        const string version = "1.0.0.0";
+        const string version = "1.1.0.1";
         static public vJoy joystick;
         static public vJoy.JoystickState iReport;
         static public uint id = 1;

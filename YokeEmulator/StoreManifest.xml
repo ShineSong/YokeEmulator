@@ -1,8 +1,4 @@
 <StoreManifest xmlns="http://schemas.microsoft.com/appx/2010/StoreManifest">
   <ProductFeatures>
-    <HardwareRequirements>
-      <Requirement Name="ID_REQ_GYROSCOPE" />
-      <Requirement Name="ID_REQ_MAGNETOMETER" />
-    </HardwareRequirements>
   </ProductFeatures>
 </StoreManifest>

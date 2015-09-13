@@ -127,9 +127,11 @@
     <Content Include="Assets\track-logo.png" />
     <Content Include="Assets\unlink.png" />
     <Content Include="Assets\WideLogo.scale-240.png" />
+    <Content Include="Assets\yoke-logo-1-sky.png" />
     <Content Include="Assets\yoke_logo_black.png" />
     <Content Include="Assets\yoke_logo_w.png" />
     <Content Include="Assets\zoom.png" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="StoreManifest.xml" />
   </ItemGroup>
   <ItemGroup>

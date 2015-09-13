@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="07efb827-2857-4165-8002-6c03f1e63490" Publisher="CN=SxS" Version="1.1.0.1" />
-  <mp:PhoneIdentity PhoneProductId="07efb827-2857-4165-8002-6c03f1e63490" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="26105SxS.YokeEmulator" Publisher="CN=331BE80E-75B2-4D98-B9FD-C521A68F5E0F" Version="1.1.0.2" />
+  <mp:PhoneIdentity PhoneProductId="277374ea-f6e8-4efd-ab48-e4bbca6411d3" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>YokeEmulator</DisplayName>
     <PublisherDisplayName>SxS</PublisherDisplayName>
@@ -29,6 +29,5 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClientServer" />
-    <Capability Name="removableStorage" />
   </Capabilities>
 </Package>
