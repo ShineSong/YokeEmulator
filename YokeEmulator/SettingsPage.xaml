@@ -44,6 +44,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -55,6 +56,7 @@
                     <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Rudder Resilience" FontSize="20"/>
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="FlyButton Label" VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="20" />
                     <TextBlock Grid.Row="5" Grid.Column="0" Text="BattleButton Label" VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="20" />
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="Button Label" VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="20" />
                     <TextBox Grid.Row="0" Grid.Column="1" x:Name="ipTextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="192.168.1.101" Width="240" FontSize="20" InputScope="Number"/>
                     <TextBox Grid.Row="1" Grid.Column="1" x:Name="trackPortTextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="0" Width="240" FontSize="20" InputScope="Number"/>
                     <ToggleSwitch Grid.Row="2" Grid.Column="1" x:Name="keepScreen"/>
@@ -72,7 +74,25 @@
                         <TextBox x:Name="battlebtn1TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
                         <TextBox x:Name="battlebtn2TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
                     </StackPanel>
-                    <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Text="Copyright (C) 2015  SxS (shinesong_sxs@foxmail.com)" TextAlignment="Center"/>
+                    <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                        <TextBox x:Name="btn1TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn2TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn3TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn4TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn5TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn6TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn7TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn8TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn9TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn10TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn11TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn12TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn13TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn14TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn15TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn1" Width="240" FontSize="20"/>
+                        <TextBox x:Name="btn16TextBox" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Text="btn2" Width="240" FontSize="20"/>
+                    </StackPanel>
+                    <TextBlock Grid.Row="7" Grid.ColumnSpan="2" Text="Copyright (C) 2015  SxS (shinesong_sxs@foxmail.com)" TextAlignment="Center"/>
                 </Grid>
             </ScrollViewer>
 

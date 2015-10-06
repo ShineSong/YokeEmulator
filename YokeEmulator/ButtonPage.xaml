@@ -1,0 +1,143 @@
+﻿<Page
+    x:Class="YokeEmulator.ButtonPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YokeEmulator"
+    xmlns:YokeCtl="using:YokeCtl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Image x:Name="unlinkImage" Source="Assets/unlink.png" />
+        <Image x:Name="linkImage" Source="Assets/link.png" />
+        <Image x:Name="joyLogoImage" Source="Assets/yoke_logo_w.png" />
+        <Image x:Name="trackerLogoImage" Source="Assets/track-logo.png" />
+        <Image x:Name="caliLogoImage" Source="Assets/yoke_logo_black.png" />
+    </Page.Resources>
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Rectangle x:Name="SwipeArea" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Fill="Transparent" ManipulationMode="TranslateX"/>
+        <Image x:Name="logoImage" Source="Assets/yoke_logo_w.png" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,5" Width="150" ManipulationMode="TranslateX,TranslateY"/>
+        <YokeCtl:YESlider x:Name="throttleSlider" Grid.Row="2" Grid.Column="1" Background="Transparent" Foreground="White" StrockThickness="5" Value="0" ThumbSize="50" FontSize="15" ValueChanged="throttleSlider_ValueChanged" />
+        <TextBlock x:Name="MsgBox" Grid.Row="0" Grid.Column="1" FontSize="12"  Height="30" TextAlignment="Center" VerticalAlignment="Bottom" IsHitTestVisible="False"/>
+        <TextBlock x:Name="MagnetStateBox" Grid.Row="1" Grid.Column="0" Padding="10,0,0,0" VerticalAlignment="Bottom" FontSize="16" TextAlignment="Right" IsHitTestVisible="False" FontWeight="Bold"/>
+        <Viewbox Grid.Row="3" Grid.Column="1" Margin="-50,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="25">
+            <TextBlock x:Name="leftCalibrationBtn" Text="Calibration" FontFamily="Agency FB" FontWeight="Bold" PointerPressed="leftCalibrationBtn_PointerPressed" PointerReleased="leftCalibrationBtn_PointerReleased"/>
+        </Viewbox>
+
+        <Viewbox Grid.Row="3" Grid.Column="1" Margin="0,0,-50,0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="25">
+            <TextBlock x:Name="rightCalibrationBtn" Text="Calibration" FontFamily="Agency FB" FontWeight="Bold" PointerPressed="rightCalibrationBtn_PointerPressed" PointerReleased="rightCalibrationBtn_PointerReleased"/>
+        </Viewbox>
+        <Grid Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Ellipse x:Name="leftTrackerBtn" Grid.Column="2" Grid.Row="0" Margin="5,5,5,5" Fill="Red" Opacity="0.7" PointerPressed="leftTrackerBtnPressed" PointerReleased="leftTrackerBtnReleased" PointerMoved="leftTrackerBtn_PointerMoved"/>
+
+            <Ellipse x:Name="Btn1" Grid.Column="2" Grid.Row="1" Margin="5,5,5,5" Fill="SkyBlue" Opacity="0.5" Tag="1" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="2" Grid.Row="1" Margin="5,5,5,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn1Text">Btn1</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn2" Grid.Column="2" Grid.Row="2" Margin="5,5,5,5" Fill="SkyBlue" Opacity="0.5" Tag="2" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="2" Grid.Row="2" Margin="5,5,5,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn2Text">Btn2</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn3" Grid.Column="1" Grid.Row="0" Margin="5,-5,5,15" Fill="SkyBlue" Opacity="0.5" Tag="3" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="1" Grid.Row="0" Margin="5,-5,5,15" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn3Text">Btn3</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn4" Grid.Column="1" Grid.Row="1" Margin="5,-5,5,15" Fill="SkyBlue" Opacity="0.5" Tag="4" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="1" Grid.Row="1" Margin="5,-5,5,15" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn4Text">Btn4</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn5" Grid.Column="1" Grid.Row="2" Margin="5,-5,5,15" Fill="SkyBlue" Opacity="0.5" Tag="5" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="1" Grid.Row="2" Margin="5,-5,5,15" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn5Text">Btn5</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn6" Grid.Column="0" Grid.Row="0" Margin="5,-15,5,25" Fill="SkyBlue" Opacity="0.5" Tag="6" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="0" Grid.Row="0" Margin="5,-15,5,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn6Text">Btn6</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn7" Grid.Column="0" Grid.Row="1" Margin="5,-15,5,25" Fill="SkyBlue" Opacity="0.5" Tag="7" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="0" Grid.Row="1" Margin="5,-15,5,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn7Text">Btn7</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn8" Grid.Column="0" Grid.Row="2" Margin="5,-15,5,25" Fill="SkyBlue" Opacity="0.5" Tag="8" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="0" Grid.Row="2" Margin="5,-15,5,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn8Text">Btn8</TextBlock>
+            </Viewbox>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Ellipse x:Name="rightTrackerBtn" Grid.Column="0" Grid.Row="0" Margin="5,5,5,5" Fill="Red" Opacity="0.7" PointerPressed="rightTrackerBtnPressed" PointerReleased="rightTrackerBtnReleased" PointerMoved="rightTrackerBtn_PointerMoved"/>
+
+            <Ellipse x:Name="Btn9" Grid.Column="0" Grid.Row="1" Margin="5,5,5,5" Fill="SkyBlue" Opacity="0.5" Tag="9" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="0" Grid.Row="1" Margin="5,5,5,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn9Text">Btn9</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn10" Grid.Column="0" Grid.Row="2" Margin="5,5,5,5" Fill="SkyBlue" Opacity="0.5" Tag="10" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="0" Grid.Row="2" Margin="5,5,5,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn10Text">Btn10</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn11" Grid.Column="1" Grid.Row="0" Margin="5,-5,5,15" Fill="SkyBlue" Opacity="0.5" Tag="11" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="1" Grid.Row="0" Margin="5,-5,5,15" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn11Text">Btn11</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn12" Grid.Column="1" Grid.Row="1" Margin="5,-5,5,15" Fill="SkyBlue" Opacity="0.5" Tag="12" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="1" Grid.Row="1" Margin="5,-5,5,15" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn12Text">Btn12</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn13" Grid.Column="1" Grid.Row="2" Margin="5,-5,5,15" Fill="SkyBlue" Opacity="0.5" Tag="13" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="1" Grid.Row="2" Margin="5,-5,5,15" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn13Text">Btn13</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn14" Grid.Column="2" Grid.Row="0" Margin="5,-15,5,25" Fill="SkyBlue" Opacity="0.5" Tag="14" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="2" Grid.Row="0" Margin="5,-15,5,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn14Text">Btn14</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn15" Grid.Column="2" Grid.Row="1" Margin="5,-15,5,25" Fill="SkyBlue" Opacity="0.5" Tag="15" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="2" Grid.Row="1" Margin="5,-15,5,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn15Text">Btn15</TextBlock>
+            </Viewbox>
+            <Ellipse x:Name="Btn16" Grid.Column="2" Grid.Row="2" Margin="5,-15,5,25" Fill="SkyBlue" Opacity="0.5" Tag="16" PointerPressed="ButtonPointerPressed" PointerReleased="ButtonPointerReleased" DoubleTapped="ButtonDoubleTapped"/>
+            <Viewbox Grid.Column="2" Grid.Row="2" Margin="5,-15,5,25" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
+                <TextBlock x:Name="Btn16Text">Btn16</TextBlock>
+            </Viewbox>
+        </Grid>
+
+        <Image x:Name="conButton" Grid.Row="2" Grid.RowSpan="2" Grid.Column="0" Width="40" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="8" Source="Assets/unlink.png" Tapped="conButton_Tapped" />
+        <YokeCtl:CurveSlider x:Name="leftSlider" Grid.Row="1" Grid.Column="0" Orientation="LeftToRight" ThumbSize="50" Margin="40,10,50,30" ValueChanged="leftSlider_ValueChanged" />
+        <YokeCtl:CurveSlider x:Name="rightSlider" Grid.Row="1" Grid.Column="2" Orientation="RightToLeft" ThumbSize="50" Margin="50,10,40,30" ValueChanged="rightSlider_ValueChanged" />
+        <Image x:Name="optButton" Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Width="40" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8" Source="Assets/opt.png" Tapped="optButton_Tapped"/>
+        
+    </Grid>
+</Page>

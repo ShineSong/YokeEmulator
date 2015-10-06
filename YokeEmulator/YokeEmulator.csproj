@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YokeEmulator</RootNamespace>
     <AssemblyName>YokeEmulator</AssemblyName>
-    <DefaultLanguage>zh-CN</DefaultLanguage>
+    <DefaultLanguage>en</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -92,6 +92,9 @@
     <Compile Include="BattlePage.xaml.cs">
       <DependentUpon>BattlePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ButtonPage.xaml.cs">
+      <DependentUpon>ButtonPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FlyPage.xaml.cs">
       <DependentUpon>FlyPage.xaml</DependentUpon>
     </Compile>
@@ -131,7 +134,9 @@
     <Content Include="Assets\yoke_logo_black.png" />
     <Content Include="Assets\yoke_logo_w.png" />
     <Content Include="Assets\zoom.png" />
-    <None Include="Package.StoreAssociation.xml" />
+    <None Include="Package.StoreAssociation.xml">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="StoreManifest.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +145,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="BattlePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ButtonPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

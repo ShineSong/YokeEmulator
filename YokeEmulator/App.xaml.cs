@@ -34,6 +34,7 @@ namespace YokeEmulator
         public static double rightSliderValue = 0;
         public static bool[] flyBtnPanelDTapped=new bool[7];
         public static bool[] batBtnPanelDTapped = new bool[2];
+        public static bool[] btnDTapped = new bool[16];
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。

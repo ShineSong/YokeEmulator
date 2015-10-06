@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="26105SxS.YokeEmulator" Publisher="CN=331BE80E-75B2-4D98-B9FD-C521A68F5E0F" Version="1.1.0.2" />
+  <Identity Name="26105SxS.YokeEmulator" Publisher="CN=331BE80E-75B2-4D98-B9FD-C521A68F5E0F" Version="1.2.0.4" />
   <mp:PhoneIdentity PhoneProductId="277374ea-f6e8-4efd-ab48-e4bbca6411d3" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>YokeEmulator</DisplayName>

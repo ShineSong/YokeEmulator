@@ -327,7 +327,7 @@ namespace YokeCtl
             {
                 btns[i].PointerPressed += btns_PointerPressed;
                 btns[i].PointerReleased += btns_PointerReleased;
-                btns[i].DoubleTapped += FlyButtonsPanel_DoubleTapped;
+                btns[i].DoubleTapped += btn_DoubleTapped;
                 btns[i].Opacity = dtapped[i] ? 1 : 0.5;
             }
         }
@@ -335,7 +335,7 @@ namespace YokeCtl
         #region buttons
         public event ButtonsPanelEventHandler ButtonsPressed;
         public event ButtonsPanelEventHandler ButtonsReleased;
-        private void FlyButtonsPanel_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        private void btn_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             int id = Array.IndexOf(btns, sender);
             dtapped[id] = true;

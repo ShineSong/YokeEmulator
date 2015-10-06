@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 using YokeCtl;
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkID=390556 上有介绍
 
@@ -26,7 +27,7 @@ namespace YokeEmulator
     /// <summary>
     /// 7键位普通飞行页
     /// </summary>
-    public sealed partial class FlyPage : Page
+    public sealed partial class ButtonPage : Page
     {
         Windows.System.Display.DisplayRequest displayRequest;
         GestureRecognizer logoGestureRecognizer = new GestureRecognizer();
@@ -41,7 +42,9 @@ namespace YokeEmulator
         bool leftCaliBtnPressed;
         bool rightCaliBtnPressed;
         bool activeRequested;
-        public FlyPage()
+
+        bool[] dtapped = null;
+        public ButtonPage()
         {
             this.InitializeComponent();
             displayRequest = new Windows.System.Display.DisplayRequest();
@@ -50,6 +53,7 @@ namespace YokeEmulator
             leftCaliBtnPressed = false;
             rightCaliBtnPressed = false;
             previousSensorMode = ActionHelper.SensorMode.JOYSTICK;
+            dtapped = new bool[16];
             App.actionHelper.InclinometerStateChanged += ActionHelper_InclinometerStateChanged;
 
             logoGestureInputProcessor(logoGestureRecognizer);
@@ -72,28 +76,60 @@ namespace YokeEmulator
                 }
                 else
                     activeRequested = false;
-            if (localSettings.Values.ContainsKey("RUDDERRESILIENCE"))
-                rudderPad.Resilience = (bool)localSettings.Values["RUDDERRESILIENCE"];
+            if (localSettings.Values.ContainsKey("BTNLABEL10"))
+                Btn1Text.Text = localSettings.Values["BTNLABEL10"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL11"))
+                Btn2Text.Text = localSettings.Values["BTNLABEL11"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL12"))
+                Btn3Text.Text = localSettings.Values["BTNLABEL12"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL13"))
+                Btn4Text.Text = localSettings.Values["BTNLABEL13"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL14"))
+                Btn5Text.Text = localSettings.Values["BTNLABEL14"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL15"))
+                Btn6Text.Text = localSettings.Values["BTNLABEL15"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL16"))
+                Btn7Text.Text = localSettings.Values["BTNLABEL16"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL17"))
+                Btn8Text.Text = localSettings.Values["BTNLABEL17"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL18"))
+                Btn9Text.Text = localSettings.Values["BTNLABEL18"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL19"))
+                Btn10Text.Text = localSettings.Values["BTNLABEL19"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL20"))
+                Btn11Text.Text = localSettings.Values["BTNLABEL20"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL21"))
+                Btn12Text.Text = localSettings.Values["BTNLABEL21"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL22"))
+                Btn13Text.Text = localSettings.Values["BTNLABEL22"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL23"))
+                Btn14Text.Text = localSettings.Values["BTNLABEL23"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL24"))
+                Btn15Text.Text = localSettings.Values["BTNLABEL24"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL25"))
+                Btn16Text.Text = localSettings.Values["BTNLABEL25"].ToString();
 
-            if (localSettings.Values.ContainsKey("BTNLABEL1"))
-                flyButtonsPanel.Btn1Text = localSettings.Values["BTNLABEL1"].ToString();
-            if (localSettings.Values.ContainsKey("BTNLABEL2"))
-                flyButtonsPanel.Btn2Text = localSettings.Values["BTNLABEL2"].ToString();
-            if (localSettings.Values.ContainsKey("BTNLABEL3"))
-                flyButtonsPanel.Btn3Text = localSettings.Values["BTNLABEL3"].ToString();
-            if (localSettings.Values.ContainsKey("BTNLABEL4"))
-                flyButtonsPanel.Btn4Text = localSettings.Values["BTNLABEL4"].ToString();
-            if (localSettings.Values.ContainsKey("BTNLABEL5"))
-                flyButtonsPanel.Btn5Text = localSettings.Values["BTNLABEL5"].ToString();
-            if (localSettings.Values.ContainsKey("BTNLABEL6"))
-                flyButtonsPanel.Btn6Text = localSettings.Values["BTNLABEL6"].ToString();
-            if (localSettings.Values.ContainsKey("BTNLABEL7"))
-                flyButtonsPanel.Btn7Text = localSettings.Values["BTNLABEL7"].ToString();
-            rudderPad.Value = App.rudderValue;
+            Btn1.Opacity = dtapped[0] ? 1 : 0.5;
+            Btn2.Opacity = dtapped[1] ? 1 : 0.5;
+            Btn3.Opacity = dtapped[2] ? 1 : 0.5;
+            Btn4.Opacity = dtapped[3] ? 1 : 0.5;
+            Btn5.Opacity = dtapped[4] ? 1 : 0.5;
+            Btn6.Opacity = dtapped[5] ? 1 : 0.5;
+            Btn7.Opacity = dtapped[6] ? 1 : 0.5;
+            Btn8.Opacity = dtapped[7] ? 1 : 0.5;
+            Btn9.Opacity = dtapped[8] ? 1 : 0.5;
+            Btn10.Opacity = dtapped[9] ? 1 : 0.5;
+            Btn11.Opacity = dtapped[10] ? 1 : 0.5;
+            Btn12.Opacity = dtapped[11] ? 1 : 0.5;
+            Btn13.Opacity = dtapped[12] ? 1 : 0.5;
+            Btn14.Opacity = dtapped[13] ? 1 : 0.5;
+            Btn15.Opacity = dtapped[14] ? 1 : 0.5;
+            Btn16.Opacity = dtapped[15] ? 1 : 0.5;
+
             throttleSlider.Value = App.throttleValue;
             leftSlider.Value = App.leftSliderValue;
             rightSlider.Value = App.rightSliderValue;
-            flyButtonsPanel.DoubleTappedProperty= App.flyBtnPanelDTapped;
+            dtapped = App.btnDTapped;
 
             switch (App.actionHelper.mode)
             {
@@ -139,11 +175,10 @@ namespace YokeEmulator
         {
             if(activeRequested)
                     displayRequest.RequestRelease();
-            App.rudderValue = rudderPad.Value;
             App.throttleValue = throttleSlider.Value;
             App.leftSliderValue = leftSlider.Value;
             App.rightSliderValue = rightSlider.Value;
-            App.flyBtnPanelDTapped = flyButtonsPanel.DoubleTappedProperty;
+            App.btnDTapped = dtapped;
         }
         #endregion
 
@@ -202,13 +237,49 @@ namespace YokeEmulator
         {
             App.actionHelper.OnButtonReleased(e.Button);
         }
+
+        private void ButtonPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            Ellipse btn = (Ellipse)sender;
+            btn.CapturePointer(e.Pointer);
+            int idx = int.Parse((string)btn.Tag)-1;
+            App.actionHelper.OnButtonPressed(10 + idx);
+            btn.Opacity = 1;
+            dtapped[idx] = false;
+        }
+
+        private void ButtonPointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            Ellipse btn = (Ellipse)sender;
+            btn.ReleasePointerCapture(e.Pointer);
+            int idx = int.Parse((string)btn.Tag) - 1;
+            if (dtapped[idx])
+            {
+                App.actionHelper.OnButtonPressed(10 + idx);
+                btn.Opacity = 1;
+            }
+            else
+            {
+                App.actionHelper.OnButtonReleased(10 + idx);
+                btn.Opacity = 0.5;
+            }
+        }
+
+        private void ButtonDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            Ellipse btn = (Ellipse)sender;
+            int bid = int.Parse((string)btn.Tag) - 1;
+            dtapped[bid] = true;
+        }
         /// <summary>
         /// right tracker button pressed
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rightTrackerBtnPressed(object sender, EventArgs e)
+        private void rightTrackerBtnPressed(object sender, PointerRoutedEventArgs e)
         {
+            rightTrackerBtn.Opacity = 1;
+            rightTrackerBtn.CapturePointer(e.Pointer);
             rightTrackBtnPressed = true;
             if (leftTrackBtnPressed)
             {
@@ -241,8 +312,10 @@ namespace YokeEmulator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rightTrackerBtnReleased(object sender, EventArgs e)
+        private void rightTrackerBtnReleased(object sender, PointerRoutedEventArgs e)
         {
+            rightTrackerBtn.Opacity = 0.7;
+            rightTrackerBtn.ReleasePointerCapture(e.Pointer);
             rightTrackBtnPressed = false;
             if(!leftTrackBtnPressed)
             {
@@ -289,7 +362,7 @@ namespace YokeEmulator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void leftTrackerBtnPressed(object sender, EventArgs e)
+        private void leftTrackerBtnPressed(object sender, PointerRoutedEventArgs e)
         {
             leftTrackBtnPressed = true;
             if (rightTrackBtnPressed)
@@ -322,7 +395,7 @@ namespace YokeEmulator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void leftTrackerBtnReleased(object sender, EventArgs e)
+        private void leftTrackerBtnReleased(object sender, PointerRoutedEventArgs e)
         {
             leftTrackBtnPressed = false;
             if(!rightTrackBtnPressed)
@@ -707,9 +780,9 @@ namespace YokeEmulator
         private void swipeAreaGestureRecognizer_ManipulationCompleted(GestureRecognizer sender, ManipulationCompletedEventArgs args)
         {
             if (args.Velocities.Linear.X > 1 && args.Cumulative.Translation.X > 50)
-                this.Frame.Navigate(typeof(ButtonPage));
-            else if (args.Velocities.Linear.X < -1 && args.Cumulative.Translation.X < -50)
                 this.Frame.Navigate(typeof(BattlePage));
+            else if (args.Velocities.Linear.X < -1 && args.Cumulative.Translation.X < -50)
+                this.Frame.Navigate(typeof(FlyPage));
         }
 
         void OnSwipeAreaPointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs args)
@@ -737,6 +810,6 @@ namespace YokeEmulator
             this.swipeAreaGestureRecognizer.ProcessMoveEvents(args.GetIntermediatePoints(this.SwipeArea));
         }
         #endregion
-        
+
     }
 }

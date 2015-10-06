@@ -1,4 +1,4 @@
-MainPackage=D:\Users\Shine\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\bin\ARM\Release\YokeEmulator_1.1.0.2_ARM.appx
-SymbolPackage=D:\Users\Shine\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\AppPackages\YokeEmulator_1.1.0.2_Test\YokeEmulator_1.1.0.2_ARM.appxsym
-ResourcePack=D:\Users\Shine\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\bin\ARM\Release\YokeEmulator_1.1.0.2_scale-100.appx
-ResourcePack=D:\Users\Shine\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\bin\ARM\Release\YokeEmulator_1.1.0.2_scale-140.appx
+MainPackage=D:\Users\Shine\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\bin\ARM\Release\YokeEmulator_1.2.0.4_ARM.appx
+SymbolPackage=D:\Users\Shine\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\AppPackages\YokeEmulator_1.2.0.4_Test\YokeEmulator_1.2.0.4_ARM.appxsym
+ResourcePack=D:\Users\Shine\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\bin\ARM\Release\YokeEmulator_1.2.0.4_scale-100.appx
+ResourcePack=D:\Users\Shine\Documents\Visual Studio 2015\Projects\YokeEmulator\YokeEmulator\bin\ARM\Release\YokeEmulator_1.2.0.4_scale-140.appx

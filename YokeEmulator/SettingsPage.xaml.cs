@@ -74,7 +74,39 @@ namespace YokeEmulator
                 battlebtn1TextBox.Text = localSettings.Values["BTNLABEL8"].ToString();
             if (localSettings.Values.ContainsKey("BTNLABEL9"))
                 battlebtn2TextBox.Text = localSettings.Values["BTNLABEL9"].ToString();
-            
+            if (localSettings.Values.ContainsKey("BTNLABEL10"))
+                btn1TextBox.Text = localSettings.Values["BTNLABEL10"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL11"))
+                btn2TextBox.Text = localSettings.Values["BTNLABEL11"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL12"))
+                btn3TextBox.Text = localSettings.Values["BTNLABEL12"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL13"))
+                btn4TextBox.Text = localSettings.Values["BTNLABEL13"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL14"))
+                btn5TextBox.Text = localSettings.Values["BTNLABEL14"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL15"))
+                btn6TextBox.Text = localSettings.Values["BTNLABEL15"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL16"))
+                btn7TextBox.Text = localSettings.Values["BTNLABEL16"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL17"))
+                btn8TextBox.Text = localSettings.Values["BTNLABEL17"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL18"))
+                btn9TextBox.Text = localSettings.Values["BTNLABEL18"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL19"))
+                btn10TextBox.Text = localSettings.Values["BTNLABEL19"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL20"))
+                btn11TextBox.Text = localSettings.Values["BTNLABEL20"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL21"))
+                btn12TextBox.Text = localSettings.Values["BTNLABEL21"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL22"))
+                btn13TextBox.Text = localSettings.Values["BTNLABEL22"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL23"))
+                btn14TextBox.Text = localSettings.Values["BTNLABEL23"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL24"))
+                btn15TextBox.Text = localSettings.Values["BTNLABEL24"].ToString();
+            if (localSettings.Values.ContainsKey("BTNLABEL25"))
+                btn16TextBox.Text = localSettings.Values["BTNLABEL25"].ToString();
+
         }
 
         private void acceptBtn_Click(object sender, RoutedEventArgs e)
@@ -94,7 +126,22 @@ namespace YokeEmulator
             localSettings.Values["BTNLABEL7"] = flybtn7TextBox.Text;
             localSettings.Values["BTNLABEL8"] = battlebtn1TextBox.Text;
             localSettings.Values["BTNLABEL9"] = battlebtn2TextBox.Text;
-
+            localSettings.Values["BTNLABEL10"] = btn1TextBox.Text;
+            localSettings.Values["BTNLABEL11"] = btn2TextBox.Text;
+            localSettings.Values["BTNLABEL12"] = btn3TextBox.Text;
+            localSettings.Values["BTNLABEL13"] = btn4TextBox.Text;
+            localSettings.Values["BTNLABEL14"] = btn5TextBox.Text;
+            localSettings.Values["BTNLABEL15"] = btn6TextBox.Text;
+            localSettings.Values["BTNLABEL16"] = btn7TextBox.Text;
+            localSettings.Values["BTNLABEL17"] = btn8TextBox.Text;
+            localSettings.Values["BTNLABEL18"] = btn9TextBox.Text;
+            localSettings.Values["BTNLABEL19"] = btn10TextBox.Text;
+            localSettings.Values["BTNLABEL20"] = btn11TextBox.Text;
+            localSettings.Values["BTNLABEL21"] = btn12TextBox.Text;
+            localSettings.Values["BTNLABEL22"] = btn13TextBox.Text;
+            localSettings.Values["BTNLABEL23"] = btn14TextBox.Text;
+            localSettings.Values["BTNLABEL24"] = btn15TextBox.Text;
+            localSettings.Values["BTNLABEL25"] = btn16TextBox.Text;
             this.Frame.GoBack();
         }
 

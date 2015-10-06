@@ -180,7 +180,7 @@ namespace YokeEmulator
         /// <param name="e"></param>
         private void batButtons_Pressed(object sender, ButtonsPanelEventArgs e)
         {
-            App.actionHelper.OnButtonPressed(e.Button);
+            App.actionHelper.OnButtonPressed(e.Button+7);
         }
         /// <summary>
         /// buttons released
@@ -189,7 +189,7 @@ namespace YokeEmulator
         /// <param name="e"></param>
         private void batButtons_Released(object sender, ButtonsPanelEventArgs e)
         {
-            App.actionHelper.OnButtonReleased(e.Button);
+            App.actionHelper.OnButtonReleased(e.Button+7);
         }
         /// <summary>
         /// right tracker button pressed
@@ -538,8 +538,15 @@ namespace YokeEmulator
                     this.Frame.Navigate(typeof(SettingsPage));
                     return;
                 }
-                await App.actionHelper.connectTo(localSettings.Values["IPADDR"].ToString(), 23333, 23334, trackPort);
-                MsgBox.Text = App.actionHelper.connected ? "Online" : "Offline";
+                try
+                {
+                    await App.actionHelper.connectTo(localSettings.Values["IPADDR"].ToString(), 23333, 23334, trackPort);
+                }
+                catch (Exception)
+                {
+                    this.Frame.Navigate(typeof(SettingsPage));
+                    return;
+                }
                 conButton.Source = App.actionHelper.connected ? linkImage.Source : unlinkImage.Source;
             }
             else
@@ -691,7 +698,7 @@ namespace YokeEmulator
             if (args.Velocities.Linear.X > 1 && args.Cumulative.Translation.X > 50)
                 this.Frame.Navigate(typeof(FlyPage));
             else if (args.Velocities.Linear.X < -1 && args.Cumulative.Translation.X < -50)
-                this.Frame.Navigate(typeof(FlyPage));
+                this.Frame.Navigate(typeof(ButtonPage));
         }
 
         void OnSwipeAreaPointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs args)
